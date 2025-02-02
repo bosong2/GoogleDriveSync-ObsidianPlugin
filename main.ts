@@ -32,35 +32,6 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	changesToken: "",
 };
 
-export class ConfirmModal extends Modal {
-	constructor(
-		app: App,
-		title: string,
-		text: string,
-		buttonText: string,
-		onSubmit: (doIt: boolean) => void
-	) {
-		super(app);
-		this.setTitle(title);
-		this.setContent(text);
-		new Setting(this.contentEl)
-			.addButton((btn) =>
-				btn
-					.setWarning()
-					.setButtonText(buttonText)
-					.onClick(() => {
-						this.close();
-						onSubmit(true);
-					})
-			)
-			.addButton((btn) =>
-				btn.setButtonText("Cancel").onClick(() => {
-					this.close();
-					onSubmit(false);
-				})
-			);
-	}
-}
 export default class ObsidianGoogleDrive extends Plugin {
 	settings: PluginSettings;
 	accessToken = {
@@ -90,6 +61,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 			"refresh-cw",
 			"Obsidian Google Drive",
 			(event) => {
+				if (this.syncing) return;
 				const menu = new Menu();
 
 				menu.addItem((item) =>
@@ -114,18 +86,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 						.setTitle("Reset from Drive")
 						.setIcon("triangle-alert")
 						.onClick(() => {
-							new ConfirmModal(
-								this.app,
-								"Are you sure you want to reset the data from Google Drive?",
-								"You'll loose all the local changes to your data and load only the information on your google drive. This step is irreversible.",
-								"RESET!",
-								(doIt) => {
-									if (doIt) {
-										reset(this);
-									}
-									return;
-								}
-							).open();
+							reset(this);
 						})
 				);
 				menu.showAtMouseEvent(event);
