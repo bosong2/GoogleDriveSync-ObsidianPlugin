@@ -6,7 +6,6 @@ import { reset } from "helpers/reset";
 import {
 	App,
 	debounce,
-	Modal,
 	Notice,
 	Plugin,
 	PluginSettingTab,

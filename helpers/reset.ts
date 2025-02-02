@@ -16,8 +16,11 @@ import {
 import { pull } from "./pull";
 
 export class ConfirmResetModal extends Modal {
+	proceed: (res: boolean) => void;
 	constructor(t: ObsidianGoogleDrive, proceed: (res: boolean) => void) {
 		super(t.app);
+		this.proceed = proceed;
+
 		this.setTitle(
 			"Are you sure you want to reset the data from Google Drive?"
 		);
@@ -26,20 +29,20 @@ export class ConfirmResetModal extends Modal {
 		);
 		new Setting(this.contentEl)
 			.addButton((btn) =>
-				btn
-					.setWarning()
-					.setButtonText("RESET!")
-					.onClick(() => {
-						this.close();
-						proceed(true);
-					})
+				btn.setButtonText("Cancel").onClick(() => this.close())
 			)
 			.addButton((btn) =>
-				btn.setButtonText("Cancel").onClick(() => {
-					this.close();
-					proceed(false);
-				})
+				btn
+					.setButtonText("RESET!")
+					.setWarning()
+					.onClick(() => {
+						proceed(true);
+						this.close();
+					})
 			);
+	}
+	onClose() {
+		this.proceed(false);
 	}
 }
 
