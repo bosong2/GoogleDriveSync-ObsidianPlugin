@@ -5,11 +5,54 @@ import {
 	foldersToBatches,
 	getSyncMessage,
 } from "./drive";
-import { Notice, TAbstractFile, TFile, TFolder } from "obsidian";
+import {
+	Notice,
+	TAbstractFile,
+	TFile,
+	TFolder,
+	Modal,
+	Setting,
+} from "obsidian";
 import { pull } from "./pull";
+
+export class ConfirmResetModal extends Modal {
+	proceed: (res: boolean) => void;
+	constructor(t: ObsidianGoogleDrive, proceed: (res: boolean) => void) {
+		super(t.app);
+		this.proceed = proceed;
+
+		this.setTitle(
+			"Are you sure you want to reset the data from Google Drive?"
+		);
+		this.setContent(
+			"You'll loose all the local changes to your data and load only the information on your google drive. This step is irreversible."
+		);
+		new Setting(this.contentEl)
+			.addButton((btn) =>
+				btn.setButtonText("Cancel").onClick(() => this.close())
+			)
+			.addButton((btn) =>
+				btn
+					.setButtonText("RESET!")
+					.setWarning()
+					.onClick(() => {
+						proceed(true);
+						this.close();
+					})
+			);
+	}
+	onClose() {
+		this.proceed(false);
+	}
+}
 
 export const reset = async (t: ObsidianGoogleDrive) => {
 	if (t.syncing) return;
+
+	const proceed = await new Promise<boolean>((resolve) => {
+		new ConfirmResetModal(t, resolve).open();
+	});
+	if (!proceed) return;
 
 	const syncNotice = await t.startSync();
 

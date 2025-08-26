@@ -47,3 +47,12 @@
 .operation-file {
 	overflow-wrap: break-word;
 }
+
+.reset-warning-modal{
+	--modal-border-color: var(--text-error);
+}
+
+.reset-warining-text{
+	color: var(--text-error);
+	font-weight: bolder;
+}
