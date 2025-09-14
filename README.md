@@ -1,94 +1,55 @@
-# Google Drive Sync
+# Obsidian Google Drive Sync Plugin
 
-This is an unofficial sync plugin for Obsidian, specifically for Google Drive.
+이 플러그인은 Richard Xiong이 제작한 원본 [Google Drive Sync](https://github.com/RichardX366/Obsidian-Google-Drive) 플러그인을 기반으로, 사용자 정의 인증 서버를 지원하도록 수정된 버전입니다.
+
+**현재 버전:** V1.0.0
+**수정자:** Peng. (ORG:Richard Xiong)
 
 ## Disclaimer
 
--   This is **not** the [official sync service](https://obsidian.md/sync) provided by Obsidian
--   This plugin communicates with external servers, namely the Google Drive API and [https://ogd.richardxiong.com](https://ogd.richardxiong.com)
-    -   The details of this communication are explained at the bottom of the notes section
+-   이 플러그인은 Obsidian 팀이 제공하는 [공식 동기화 서비스](https://obsidian.md/sync)가 아닙니다.
+-   이 플러그인은 외부 서버와 통신합니다. 기본적으로 Google Drive API와 통신하며, 인증 토큰 교환을 위해 사용자가 직접 지정한 서버와 통신합니다.
 
 ## Caution
 
-**ALWAYS backup your vault before using this plugin.**
+**이 플러그인을 사용하기 전에는 반드시 볼트(Vault)를 백업하십시오. 데이터 유실의 위험이 있을 수 있습니다.**
 
-## Features
+## 주요 기능
 
--   Syncing both ways (from Obsidian to Google Drive and back)
--   Cross-device support
--   Obsidian iOS app support
--   Local file prioritization (automatically resolves conflicts)
--   Multiple vaults per Google account
--   Configuration syncing
+-   양방향 동기화 (Obsidian -> Google Drive, Google Drive -> Obsidian)
+-   여러 기기 간 동기화 지원 (Windows, MacOS, iOS 테스트 완료)
+-   로컬 파일 우선 동기화 (충돌 자동 해결)
+-   **사용자 정의 인증 서버 지원**
 
-## New Devices
+## 설치 및 설정 방법
 
--   If you've already been using this plugin and want to start using it on a new device, then follow these instructions:
-    1. Open Google Drive and download the entire Obsidian folder to your new device
-    2. Move the Obsidian folder to the location where you want your vault to be
-    3. Open Obsidian and set the vault location to the folder you just moved
--   If you activate the plugin on a new device without downloading the Obsidian folder from Google Drive, the plugin will start downloading from Google Drive as per a typical sync, which could take an extremely long amount of time depending on the number of notes in Google Drive, but it would still work (we suggest the above method instead)
+이 플러그인은 인증 토큰 교환을 위해 별도의 서버를 필요로 합니다. 원본 프로젝트의 서버 코드를 참고하여 직접 서버를 구축해야 합니다.
 
-## Notes
+### 1단계: 서버 URL 설정
 
--   Do **NOT** manually upload files into the generated Obsidian Google Drive folder or use some other method of Google Drive sync
-    -   Our plugin cannot see these files, and it will likely break functionality, potentially causing data loss
-    -   Instead, use this plugin on any device you wish to sync the vault between
--   Do **NOT** manually change files outside of the Obsidian app
-    -   Our plugin tracks file changes through the Obsidian API, and if you change files outside of the app, the plugin will not be able to track these changes
--   If you ever encounter the following situation or vice versa, SYNC after you delete/rename it and before you rename/create the file/folder with the exact same path (this error arises from our plugin seeing a file convert into a folder or vice versa) (this doesn't apply for file to file or folder to folder):
-    -   You have a file that has NO file extension already synced (most files have a file extension so you usually don't have to worry about this)
-    -   You delete it/rename it
-    -   You rename/create a folder with the exact same path
--   When activating this plugin on a new vault, make sure the vault is empty
-    -   If you have files that you want to sync to Google Drive from before the plugin, move them to another vault, delete them from the current vault, activate the plugin, and copy them back in **THROUGH THE OBSIDIAN APP**
--   We suggest only editing Obsidian notes on one device at a time to avoid conflicts and syncing before editing on another device
-    -   Our plugin does have code to handle conflicts, but it might not be perfect or as the user expects, so try to avoid them
--   Make sure to sync with an adequate internet connection
-    -   Closing the app or losing connection while syncing could lead to data corruption
--   The plugin does NOT have manual conflict resolution
-    -   If you encounter a conflict, the plugin will automatically resolve it with local file prioritization
--   Do **NOT** change the Obsidian configuration folder
-    -   If you really want to, make a new vault, change the folder, enable the plugin, and copy your files over (you can move the contents of .obsidian to the new folder through file explorer)
--   This only accesses the Google Drive API to sync files and does not access or store any data outside of the user's device
--   This only accesses [https://ogd.richardxiong.com](https://ogd.richardxiong.com) to convert refresh tokens into access tokens (while hiding the client secret) and to check internet connectivity with a simple ping request
+1.  Obsidian에서 `설정` -> `커뮤니티 플러그인`으로 이동하여 `Obsidian Google Drive Sync Plugin`을 활성화합니다.
+2.  플러그인 설정 창을 엽니다.
+3.  직접 구축한 인증 서버의 주소(예: `http://localhost:3000`)를 **Server URL** 입력란에 기입합니다.
+4.  **Save** 버튼을 클릭합니다. 플러그인이 서버 주소의 유효성을 검사하고 연결 가능 여부를 확인합니다. "Server URL saved successfully." 알림이 뜨면 성공입니다.
 
-## Setup
+### 2단계: Refresh Token 설정
 
-Note: Instructions are also on this plugin's homepage with images at [https://ogd.richardxiong.com](https://ogd.richardxiong.com)
+1.  설정 창 상단의 **Get refresh token** 링크를 클릭합니다. (이 링크는 방금 저장한 Server URL로 연결됩니다.)
+2.  브라우저에서 서버에 로그인하고, 화면에 표시되는 **Refresh Token**을 복사합니다.
+3.  플러그인 설정 창으로 돌아와 **Refresh token** 입력란에 복사한 토큰을 붙여넣습니다.
+4.  **Check** 버튼을 클릭합니다. 플러그인이 서버와 통신하여 토큰의 유효성을 검증합니다. "Refresh token is valid and has been saved!" 알림이 뜨면 성공입니다.
 
-1. Visit this plugin's homepage at [https://ogd.richardxiong.com](https://ogd.richardxiong.com)
-2. Click `Sign In` at the top right and log in with your Google account
-3. Copy the refresh token that appears after logging in
-4. Enable the Google Drive Sync plugin in Obsidian
-5. Paste the refresh token into the plugin settings in Obsidian
-6. Reload the Obsidian app
+### 3단계: 플러그인 재시작
 
-## Use
+모든 설정이 완료되었습니다. Obsidian을 완전히 종료했다가 다시 시작하면 동기화가 활성화됩니다.
 
--   After setup, the plugin will automatically sync your vault with Google Drive whenever Obsidian is open
-    -   This sync is from Google Drive TO Obsidian, not the other way around (pulling cloud files)
-    -   The plugin prioritizes unsynced local changes except for local file deletions (cloud file creation/modification will overwrite local deletion)
-    -   You can pull by running the `Pull from Google Drive` command
-    -   Pulling new plugins/configurations may require a restart of Obsidian
--   To sync local changes to Google Drive, click the sync button on the ribbon or run the `Push to Google Drive` command from the command palette
-    -   While you do not have to sync before you close Obsidian, we suggest doing so to ensure that Google Drive is up to date and no conflicts occur
-    -   This will pull changes before pushing changes to Google Drive
--   If you want to set your local vault state to the Google Drive state, run the `Set Local Vault to Google Drive` command
--   If you mess with the vault's files while Obsidian is closed, try to revert any of the changes you made
+## 사용법
 
-## Multiple Vaults
+-   **Pull (가져오기)**: Obsidian을 시작할 때 또는 명령어(`Google Drive: Pull from Google Drive`)를 통해 자동으로 Google Drive의 변경사항을 가져옵니다.
+-   **Push (내보내기)**: 로컬 볼트의 변경사항을 Google Drive로 보내려면, 좌측 리본 메뉴의 동기화 아이콘을 클릭하거나 명령어(`Google Drive: Push to Google Drive`)를 실행합니다.
+-   **Reset (초기화)**: 로컬 상태를 Google Drive의 상태로 강제로 덮어쓰려면 명령어(`Google Drive: Reset local vault to Google Drive`)를 실행합니다. **(주의: 로컬 변경사항이 사라질 수 있습니다.)**
 
--   The Google Drive folder that gets created upon setup is the root folder for the vault and is tagged with the vault name
-    -   It is named the same as your vault name, has a matching description, and stores the vault name internally
-    -   You can rename the Google Drive folder without consequence
-    -   You can also color the folder in Google Drive and place it wherever you please
-    -   Each file in the vault is also tagged with the vault name inside Google Drive's properties
--   Each vault is connected to the Google Drive folder that has the same tag/internal name
-    -   If you want multiple devices to sync to the same vault, the vault names must match
--   You can have multiple vaults per Google account by having local vaults with different names
-    -   Do NOT rename local vaults that you are syncing to Google Drive
-    -   Instead, make a new vault, sync it, and transfer your files over
-    -   We will not add any implementation to automate this process because it inherently messes with other synced devices
+## 주의사항
 
-Privacy Policy: [https://ogd.richardxiong.com/privacy](https://ogd.richardxiong.com/privacy)
+-   데이터 손실을 방지하기 위해, Google Drive에 생성된 플러그인 폴더에 수동으로 파일을 업로드하거나 다른 동기화 프로그램을 함께 사용하지 마십시오.
+-   가급적 Obsidian 앱 내에서만 파일을 수정하십시오. 외부에서 파일을 변경하면 변경사항이 추적되지 않을 수 있습니다.

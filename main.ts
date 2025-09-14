@@ -1,4 +1,4 @@
-import { checkConnection, getDriveClient } from "helpers/drive";
+import { checkConnection, getDriveClient, checkServer } from "helpers/drive";
 import { refreshAccessToken } from "helpers/ky";
 import { pull } from "helpers/pull";
 import { push } from "helpers/push";
@@ -21,6 +21,7 @@ interface PluginSettings {
 	driveIdToPath: Record<string, string>;
 	lastSyncedAt: number;
 	changesToken: string;
+	ServerURL: string;
 }
 
 const DEFAULT_SETTINGS: PluginSettings = {
@@ -29,6 +30,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	driveIdToPath: {},
 	lastSyncedAt: 0,
 	changesToken: "",
+	ServerURL: "https://ogd.richardxiong.com",
 };
 
 export default class ObsidianGoogleDrive extends Plugin {
@@ -121,7 +123,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 		this.registerEvent(vault.on("modify", this.handleModify.bind(this)));
 		this.registerEvent(vault.on("rename", this.handleRename.bind(this)));
 
-		checkConnection().then(async (connected) => {
+		checkConnection(this).then(async (connected) => {
 			if (connected) {
 				this.syncing = true;
 				this.ribbonIcon.addClass("spin");
@@ -261,7 +263,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 	}
 
 	async startSync() {
-		if (!(await checkConnection())) {
+		if (!(await checkConnection(this))) {
 			throw new Notice(
 				"You are not connected to the internet, so you cannot sync right now. Please try syncing once you have connection again."
 			);
@@ -314,65 +316,82 @@ class SettingsTab extends PluginSettingTab {
 
 	display(): void {
 		const { containerEl } = this;
-		const { vault } = this.app;
 
 		containerEl.empty();
 
-		containerEl.createEl("a", {
-			href: "https://ogd.richardxiong.com",
-			text: "Get refresh token",
-		});
+		const linkEl = containerEl.createEl("a", { text: "Get refresh token" });
+		linkEl.style.cursor = "pointer";
+		linkEl.onclick = () => {
+			if (this.plugin.settings.ServerURL) {
+				window.open(this.plugin.settings.ServerURL, '_blank');
+			} else {
+				new Notice("Please set and save a Server URL below before getting a token.");
+			}
+		};
+
+		let serverUrlInput = "";
+		new Setting(containerEl)
+			.setName("Server URL")
+			.setDesc("Enter the custom server URL for token exchange.")
+			.addText((text) => {
+				text
+					.setPlaceholder("https://example.com")
+					.setValue(this.plugin.settings.ServerURL)
+					.onChange((value) => {
+						serverUrlInput = value;
+					});
+			})
+			.addButton((button) => {
+				button.setButtonText("Save").onClick(async () => {
+					try {
+						new URL(serverUrlInput);
+					} catch (e) {
+						new Notice("Invalid Server URL format.");
+						return;
+					}
+
+					const isServerReachable = await checkServer(this.app, serverUrlInput);
+					if (!isServerReachable) {
+						new Notice("Server is not reachable. Please check the URL and server status.");
+						return;
+					}
+
+					this.plugin.settings.ServerURL = serverUrlInput;
+					await this.plugin.saveSettings();
+					new Notice("Server URL saved successfully.");
+				});
+			});
 
 		new Setting(containerEl)
 			.setName("Refresh token")
-			.setDesc(
-				"A refresh token is required to access your Google Drive for syncing. We suggest cloning your Google Drive vault to the current vault BEFORE syncing."
-			)
+			.setDesc("A refresh token is required to access your Google Drive.")
 			.addText((text) => {
-				const cancel = () => {
-					this.plugin.settings.refreshToken = "";
-					text.setValue("");
-					return this.plugin.saveSettings();
-				};
-
-				text.setPlaceholder("Enter your refresh token")
+				text
+					.setPlaceholder("Enter your refresh token")
 					.setValue(this.plugin.settings.refreshToken)
 					.onChange(async (value) => {
 						this.plugin.settings.refreshToken = value;
-						if (!value) {
-							return this.plugin.debouncedSaveSettings();
-						}
-						if (!(await refreshAccessToken(this.plugin))) {
-							text.setValue("");
-							return;
-						}
-						if (
-							vault
-								.getAllLoadedFiles()
-								.filter(({ path }) => path !== "/").length > 0
-						) {
-							new Notice(
-								"Your current vault is not empty! If you want our plugin to handle the initial sync, you have to clear out the current vault. Check the readme or website for more details.",
-								0
-							);
-							return cancel();
-						}
-
-						const changesToken =
-							await this.plugin.drive.getChangesStartToken();
-						if (!changesToken) {
-							return new Notice(
-								"An error occurred fetching Google Drive changes token."
-							);
-						}
-						this.plugin.settings.changesToken = changesToken;
-
-						await this.plugin.saveSettings();
-						new Notice(
-							"Refresh token saved! Reload Obsidian to activate sync.",
-							0
-						);
 					});
+			})
+			.addButton((button) => {
+				button.setButtonText("Check").onClick(async () => {
+					if (!this.plugin.settings.ServerURL) {
+						new Notice("Please set and save the Server URL first.");
+						return;
+					}
+					if (!this.plugin.settings.refreshToken) {
+						new Notice("Please enter a refresh token.");
+						return;
+					}
+
+					const success = await refreshAccessToken(this.plugin);
+					if (success) {
+						await this.plugin.saveSettings();
+						new Notice("Refresh token is valid and has been saved!");
+					} else {
+						new Notice("Failed to validate refresh token. Please check the token and server settings.");
+					}
+				});
 			});
 	}
 }

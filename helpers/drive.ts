@@ -1,3 +1,4 @@
+import { App } from "obsidian";
 import ky from "ky";
 import ObsidianGoogleDrive from "main";
 import { getDriveKy } from "./ky";
@@ -119,16 +120,7 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	}) => {
 		const files = await drive
 			.get(
-				`drive/v3/files?fields=nextPageToken,files(${include.join(
-					","
-				)})&pageSize=${pageSize}&q=${
-					matches ? getQuery(matches) : "trashed=false"
-				}${
-					matches?.find(({ query }) => query)
-						? ""
-						: "&orderBy=name" +
-						  (order === "ascending" ? "" : " desc")
-				}${pageToken ? "&pageToken=" + pageToken : ""}`
+				`drive/v3/files?fields=nextPageToken,files(${include.join(",")})&pageSize=${pageSize}&q=${matches ? getQuery(matches) : "trashed=false"}${matches?.find(({ query }) => query)? "": "&orderBy=name" +(order === "ascending" ? "" : " desc")}${pageToken ? "&pageToken=" + pageToken : ""}`
 			)
 			.json<any>();
 		if (!files) return;
@@ -526,11 +518,22 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	};
 };
 
-export const checkConnection = async () => {
+export const checkConnection = async (t: ObsidianGoogleDrive) => {
 	try {
-		const result = await ky.get("https://ogd.richardxiong.com/api/ping");
+		const result = await ky.get(`${t.settings.ServerURL}/api/ping`);
 		return result.ok;
-	} catch {
+	} catch (e) {
+		console.error("Connection check failed in checkConnection:", e);
+		return false;
+	}
+};
+
+export const checkServer = async (app: App, url: string) => {
+	try {
+		const result = await ky.get(`${url}/api/ping`);
+		return result.ok;
+	} catch (e) {
+		console.error("Server check failed in checkServer:", e);
 		return false;
 	}
 };
