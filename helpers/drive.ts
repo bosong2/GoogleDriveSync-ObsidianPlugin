@@ -496,6 +496,169 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		return configFilesToSync;
 	};
 
+	// 전체 볼트 파일 스캔 (초기 동기화용)
+	const getAllVaultFiles = async () => {
+		const allFiles: string[] = [];
+		const allFolders: string[] = [];
+		const { vault } = t.app;
+		
+		const scanFolder = async (folderPath: string) => {
+			try {
+				const folderContents = await vault.adapter.list(folderPath);
+				
+				// 파일들 추가 (config 파일 제외)
+				folderContents.files.forEach(filePath => {
+					if (!filePath.startsWith('.obsidian/') && 
+						!filePath.includes('.DS_Store') &&
+						!filePath.includes('.git/')) {
+						allFiles.push(filePath);
+					}
+				});
+				
+				// 폴더들 추가 및 재귀 스캔
+				for (const subFolder of folderContents.folders) {
+					if (!subFolder.startsWith('.obsidian/') && 
+						!subFolder.includes('.git/')) {
+						allFolders.push(subFolder);
+						await scanFolder(subFolder);
+					}
+				}
+			} catch (error) {
+				console.warn(`Failed to scan folder ${folderPath}:`, error);
+			}
+		};
+		
+		await scanFolder('');
+		return { files: allFiles, folders: allFolders };
+	};
+
+	// 초기 동기화 필요 여부 확인
+	const isFirstTimeSync = async () => {
+		try {
+			const rootFolderId = await getRootFolderId();
+			if (!rootFolderId) return true;
+			
+			const existingFiles = await searchFiles({
+				matches: [{ parent: rootFolderId }],
+				include: ['id']
+			});
+			
+			return !existingFiles || existingFiles.length === 0;
+		} catch (error) {
+			console.warn('Failed to check first-time sync:', error);
+			return false;
+		}
+	};
+
+	// 폴더 구조를 안전하게 순차 생성
+	const createFoldersSequentially = async (folderPaths: string[]) => {
+		// 폴더 깊이별로 정렬 (얕은 것부터)
+		const sortedFolders = folderPaths.sort((a, b) => {
+			const depthA = a.split('/').length;
+			const depthB = b.split('/').length;
+			if (depthA !== depthB) return depthA - depthB;
+			return a.localeCompare(b); // 같은 깊이면 알파벳순
+		});
+
+		const pathsToIds = Object.fromEntries(
+			Object.entries(t.settings.driveIdToPath).map(([id, path]) => [path, id])
+		);
+
+		let createdCount = 0;
+		const errors: string[] = [];
+
+		for (const folderPath of sortedFolders) {
+			try {
+				// 이미 존재하는 폴더는 건너뛰기
+				if (pathsToIds[folderPath]) {
+					continue;
+				}
+
+				const folderName = folderPath.split('/').pop() || '';
+				const parentPath = folderPath.split('/').slice(0, -1).join('/');
+				const parentId = parentPath ? pathsToIds[parentPath] : await getRootFolderId();
+
+				if (!parentId) {
+					errors.push(`Parent folder not found for: ${folderPath}`);
+					continue;
+				}
+
+				const folderId = await createFolder({
+					name: folderName,
+					parent: parentId,
+					properties: { path: folderPath },
+					modifiedTime: new Date().toISOString(),
+				});
+
+				if (folderId) {
+					t.settings.driveIdToPath[folderId] = folderPath;
+					pathsToIds[folderPath] = folderId;
+					createdCount++;
+				} else {
+					errors.push(`Failed to create folder: ${folderPath}`);
+				}
+			} catch (error) {
+				errors.push(`Error creating folder ${folderPath}: ${error.message}`);
+			}
+		}
+
+		return { createdCount, errors };
+	};
+
+	// 초기 동기화 실행
+	const performInitialSync = async (options = { showProgress: true }) => {
+		try {
+			const { files, folders } = await getAllVaultFiles();
+			
+			if (files.length === 0 && folders.length === 0) {
+				return { success: true, message: 'No files to sync', filesAdded: 0, foldersCreated: 0 };
+			}
+
+			// 1. 폴더 순차 생성
+			let foldersCreated = 0;
+			let folderErrors: string[] = [];
+			
+			if (folders.length > 0) {
+				const folderResult = await createFoldersSequentially(folders);
+				foldersCreated = folderResult.createdCount;
+				folderErrors = folderResult.errors;
+			}
+
+			// 2. 파일들을 operations에 추가
+			let filesAdded = 0;
+			files.forEach(filePath => {
+				if (!t.settings.operations[filePath]) {
+					t.settings.operations[filePath] = "create";
+					filesAdded++;
+				}
+			});
+
+			// 설정 저장
+			await t.saveSettings();
+
+			const allErrors = [...folderErrors];
+			const success = allErrors.length === 0;
+
+			return {
+				success,
+				filesAdded,
+				foldersCreated,
+				errors: allErrors,
+				message: success 
+					? `Initial sync ready: ${filesAdded} files, ${foldersCreated} folders`
+					: `Partial sync: ${filesAdded} files, ${foldersCreated} folders (${allErrors.length} errors)`
+			};
+		} catch (error) {
+			return {
+				success: false,
+				filesAdded: 0,
+				foldersCreated: 0,
+				errors: [error.message],
+				message: `Initial sync failed: ${error.message}`
+			};
+		}
+	};
+
 	return {
 		paginateFiles,
 		searchFiles,
@@ -515,6 +678,10 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		checkConnection,
 		deleteFilesMinimumOperations,
 		getConfigFilesToSync,
+		getAllVaultFiles,
+		isFirstTimeSync,
+		createFoldersSequentially,
+		performInitialSync,
 	};
 };
 

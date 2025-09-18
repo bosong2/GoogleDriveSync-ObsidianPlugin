@@ -53,3 +53,9 @@
 
 -   데이터 손실을 방지하기 위해, Google Drive에 생성된 플러그인 폴더에 수동으로 파일을 업로드하거나 다른 동기화 프로그램을 함께 사용하지 마십시오.
 -   가급적 Obsidian 앱 내에서만 파일을 수정하십시오. 외부에서 파일을 변경하면 변경사항이 추적되지 않을 수 있습니다.
+
+## 개발가이드
+-  npm audit fix --force
+-  npm fund
+-  npm install
+-  npm run build

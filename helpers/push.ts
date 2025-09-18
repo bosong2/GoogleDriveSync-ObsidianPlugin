@@ -242,6 +242,19 @@ class ConfirmUndoModal extends Modal {
 
 export const push = async (t: ObsidianGoogleDrive) => {
 	if (t.syncing) return;
+	
+	// 초기 동기화 자동 감지 및 실행
+	const isFirstTime = await t.drive.isFirstTimeSync();
+	if (isFirstTime) {
+		const initialSyncResult = await t.drive.performInitialSync();
+		if (initialSyncResult.success) {
+			new Notice(`Auto-detected first sync: ${initialSyncResult.message}. Proceeding with push...`, 8000);
+		} else {
+			new Notice(`Initial sync warning: ${initialSyncResult.message}`);
+			console.warn('Initial sync issues:', initialSyncResult.errors);
+		}
+	}
+	
 	const initialOperations = Object.entries(t.settings.operations).sort(
 		([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)
 	); // Alphabetical

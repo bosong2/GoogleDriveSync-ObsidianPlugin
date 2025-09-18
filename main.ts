@@ -30,7 +30,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 	driveIdToPath: {},
 	lastSyncedAt: 0,
 	changesToken: "",
-	ServerURL: "https://ogd.richardxiong.com",
+	ServerURL: "",
 };
 
 export default class ObsidianGoogleDrive extends Plugin {
@@ -152,6 +152,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 	debouncedSaveSettings = debounce(this.saveSettings.bind(this), 500, true);
 
 	handleCreate(file: TAbstractFile) {
+		if (file.path.includes(".DS_Store")) return;
 		if (this.settings.operations[file.path] === "delete") {
 			if (file instanceof TFile) {
 				this.settings.operations[file.path] = "modify";
@@ -165,6 +166,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 	}
 
 	handleDelete(file: TAbstractFile) {
+		if (file.path.includes(".DS_Store")) return;
 		if (this.settings.operations[file.path] === "create") {
 			delete this.settings.operations[file.path];
 		} else {
@@ -174,6 +176,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 	}
 
 	handleModify(file: TFile) {
+		if (file.path.includes(".DS_Store")) return;
 		const operation = this.settings.operations[file.path];
 		if (operation === "create" || operation === "modify") {
 			return;
@@ -183,6 +186,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 	}
 
 	handleRename(file: TAbstractFile, oldPath: string) {
+		if (file.path.includes(".DS_Store")) return;
 		this.handleDelete({ ...file, path: oldPath });
 		this.handleCreate(file);
 		this.debouncedSaveSettings();
@@ -319,6 +323,7 @@ class SettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
+
 		const linkEl = containerEl.createEl("a", { text: "Get refresh token" });
 		linkEl.style.cursor = "pointer";
 		linkEl.onclick = () => {
@@ -392,6 +397,83 @@ class SettingsTab extends PluginSettingTab {
 						new Notice("Failed to validate refresh token. Please check the token and server settings.");
 					}
 				});
+			});
+
+		// Initial Sync 기능 추가
+		new Setting(containerEl)
+			.setName("Initial Vault Sync")
+			.setDesc("Step 1: Scan and add all existing vault files to sync queue. After scanning, use 'Push' to upload them to Google Drive.")
+			.addButton((button) => {
+				button
+					.setButtonText("Scan All Files")
+					.onClick(async () => {
+						if (!this.plugin.settings.refreshToken) {
+							new Notice("Please set up your refresh token first.");
+							return;
+						}
+
+						button.setDisabled(true);
+						button.setButtonText("Scanning...");
+
+						try {
+							const result = await this.plugin.drive.performInitialSync();
+							
+							if (result.success) {
+								new Notice(`${result.message}. Now use 'Push' (ribbon icon) to upload these files to Google Drive.`);
+							} else {
+								const errorMsg = result.errors && result.errors.length > 0 
+									? `${result.message}\nErrors: ${result.errors.join(', ')}`
+									: result.message;
+								new Notice(errorMsg);
+								console.error('Initial sync errors:', result.errors);
+							}
+						} catch (error) {
+							new Notice(`Initial sync failed: ${error.message}`);
+							console.error('Initial sync error:', error);
+						} finally {
+							button.setDisabled(false);
+							button.setButtonText("Scan All Files");
+						}
+					});
+			})
+
+		// Operations 상태 표시 추가
+		new Setting(containerEl)
+			.setName("Sync Queue Status")
+			.setDesc(`Currently tracking ${Object.keys(this.plugin.settings.operations).length} file operations. Use 'Push' to sync them to Google Drive.`)
+			.addButton((button) => {
+				button
+					.setButtonText("View Queue")
+					.onClick(() => {
+						const operations = this.plugin.settings.operations;
+						const operationsList = Object.entries(operations)
+							.map(([path, op]) => `${op.toUpperCase()}: ${path}`)
+							.slice(0, 20); // 첫 20개만 표시
+						
+						const totalCount = Object.keys(operations).length;
+						const message = totalCount === 0 
+							? "No files in sync queue."
+							: `Sync Queue (${totalCount} files):\n\n${operationsList.join('\n')}${totalCount > 20 ? `\n\n... and ${totalCount - 20} more files` : ''}`;
+						
+						new Notice(message, 10000);
+					});
+			});
+
+		// Reset 기능 추가
+		new Setting(containerEl)
+			.setName("Reset Sync State")
+			.setDesc("Clear all tracked operations. Use only if you want to start fresh.")
+			.addButton((button) => {
+				button
+					.setButtonText("Clear Operations")
+					.setWarning()
+					.onClick(async () => {
+						if (confirm("Are you sure you want to clear all tracked file operations? This cannot be undone.")) {
+							this.plugin.settings.operations = {};
+							await this.plugin.saveSettings();
+							new Notice("All operations cleared. Use 'Scan All Files' to rebuild the sync queue.");
+						}
+					});
 			});
 	}
 }

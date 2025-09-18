@@ -1,10 +1,10 @@
 {
-	"id": "google-drive-sync",
-	"name": "Obsidian Google Drive Sync Plugin",
+	"id": "google-drive-sync-peng",
+	"name": "Obsidian GDS Plugin",
 	"version": "V1.0.0",
 	"minAppVersion": "1.6.0",
 	"description": "Syncs a vault into Google Drive for cross-platform use (works for iOS).",
 	"author": "Peng. (ORG:Richard Xiong)",
-	"authorUrl": "https://ogd.richardxiong.com",
+	"authorUrl": "https://ogds.bosong.com",
 	"isDesktopOnly": false
 }
