@@ -506,11 +506,12 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 			try {
 				const folderContents = await vault.adapter.list(folderPath);
 				
-				// 파일들 추가 (config 파일 제외)
+				// 파일들 추가 (config 파일 및 error.json 제외)
 				folderContents.files.forEach(filePath => {
 					if (!filePath.startsWith('.obsidian/') && 
 						!filePath.includes('.DS_Store') &&
-						!filePath.includes('.git/')) {
+						!filePath.includes('.git/') &&
+						!filePath.endsWith('error.json')) {
 						allFiles.push(filePath);
 					}
 				});

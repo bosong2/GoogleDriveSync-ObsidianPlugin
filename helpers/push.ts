@@ -8,6 +8,7 @@ import {
 	getSyncMessage,
 } from "./drive";
 import { pull } from "./pull";
+import { ErrorManager, SyncProgress } from "./errorManager";
 
 class ConfirmPushModal extends Modal {
 	proceed: (res: boolean) => void;
@@ -354,35 +355,57 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 		const notes = files.filter((file) => file instanceof TFile) as TFile[];
 
+		const errorManager = new ErrorManager(t);
+		let successCount = 0;
+		let failureCount = 0;
+
 		await batchAsyncs(
 			notes.map((note) => async () => {
-				const id = await t.drive.uploadFile(
-					new Blob([await vault.readBinary(note)]),
-					note.name,
-					note.parent ? pathsToIds[note.parent.path] : undefined,
-					{
-						properties: { path: note.path },
-						modifiedTime: new Date().toISOString(),
-					}
-				);
-				if (!id) {
-					return new Notice(
-						"An error occurred creating Google Drive files."
+				try {
+					const id = await t.drive.uploadFile(
+						new Blob([await vault.readBinary(note)]),
+						note.name,
+						note.parent ? pathsToIds[note.parent.path] : undefined,
+						{
+							properties: { path: note.path },
+							modifiedTime: new Date().toISOString(),
+						}
 					);
+					
+					if (!id) {
+						throw new Error("Failed to get file ID from Google Drive");
+					}
+
+					t.settings.driveIdToPath[id] = note.path;
+					
+					// 성공 시 오류 기록에서 제거
+					await errorManager.removeErrors([note.path]);
+					successCount++;
+					
+				} catch (error) {
+					console.error(`Failed to upload file ${note.path}:`, error);
+					await errorManager.addError(note.path, 'create', error);
+					failureCount++;
 				}
 
 				completed++;
-				syncNotice.setMessage(
-					getSyncMessage(33, 66, completed, files.length)
-				);
-
-				t.settings.driveIdToPath[id] = note.path;
+				const progressMsg = failureCount > 0 
+					? `Syncing... (${completed}/${files.length} files, ${failureCount} failed)`
+					: getSyncMessage(33, 66, completed, files.length);
+				syncNotice.setMessage(progressMsg);
 			})
 		);
+
+		// 최종 결과 표시
+		if (failureCount > 0) {
+			new Notice(`Upload completed: ${successCount} succeeded, ${failureCount} failed. Check sync errors in settings.`, 8000);
+		}
 	}
 
 	if (modifies.length) {
 		let completed = 0;
+		let modifySuccessCount = 0;
+		let modifyFailureCount = 0;
 
 		const files = modifies
 			.map(([path]) => vault.getFileByPath(path))
@@ -395,25 +418,43 @@ export const push = async (t: ObsidianGoogleDrive) => {
 			])
 		);
 
+		const errorManager = new ErrorManager(t);
+
 		await batchAsyncs(
 			files.map((file) => async () => {
-				const id = await t.drive.updateFile(
-					pathToId[file.path],
-					new Blob([await vault.readBinary(file)]),
-					{ modifiedTime: new Date().toISOString() }
-				);
-				if (!id) {
-					return new Notice(
-						"An error occurred modifying Google Drive files."
+				try {
+					const id = await t.drive.updateFile(
+						pathToId[file.path],
+						new Blob([await vault.readBinary(file)]),
+						{ modifiedTime: new Date().toISOString() }
 					);
+					
+					if (!id) {
+						throw new Error("Failed to update file on Google Drive");
+					}
+
+					// 성공 시 오류 기록에서 제거
+					await errorManager.removeErrors([file.path]);
+					modifySuccessCount++;
+
+				} catch (error) {
+					console.error(`Failed to modify file ${file.path}:`, error);
+					await errorManager.addError(file.path, 'modify', error);
+					modifyFailureCount++;
 				}
 
 				completed++;
-				syncNotice.setMessage(
-					getSyncMessage(66, 99, completed, files.length)
-				);
+				const progressMsg = modifyFailureCount > 0 
+					? `Syncing... (${completed}/${files.length} files, ${modifyFailureCount} failed)`
+					: getSyncMessage(66, 99, completed, files.length);
+				syncNotice.setMessage(progressMsg);
 			})
 		);
+
+		// 최종 결과 표시
+		if (modifyFailureCount > 0) {
+			new Notice(`Modify completed: ${modifySuccessCount} succeeded, ${modifyFailureCount} failed. Check sync errors in settings.`, 8000);
+		}
 	}
 
 	const configFilesToSync = await t.drive.getConfigFilesToSync();

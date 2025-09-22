@@ -153,6 +153,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleCreate(file: TAbstractFile) {
 		if (file.path.includes(".DS_Store")) return;
+		if (file.path.endsWith("error.json")) return; // error.json 제외
 		if (this.settings.operations[file.path] === "delete") {
 			if (file instanceof TFile) {
 				this.settings.operations[file.path] = "modify";
@@ -167,6 +168,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleDelete(file: TAbstractFile) {
 		if (file.path.includes(".DS_Store")) return;
+		if (file.path.endsWith("error.json")) return; // error.json 제외
 		if (this.settings.operations[file.path] === "create") {
 			delete this.settings.operations[file.path];
 		} else {
@@ -177,6 +179,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleModify(file: TFile) {
 		if (file.path.includes(".DS_Store")) return;
+		if (file.path.endsWith("error.json")) return; // error.json 제외
 		const operation = this.settings.operations[file.path];
 		if (operation === "create" || operation === "modify") {
 			return;
@@ -187,6 +190,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleRename(file: TAbstractFile, oldPath: string) {
 		if (file.path.includes(".DS_Store")) return;
+		if (file.path.endsWith("error.json") || oldPath.endsWith("error.json")) return; // error.json 제외
 		this.handleDelete({ ...file, path: oldPath });
 		this.handleCreate(file);
 		this.debouncedSaveSettings();
@@ -458,6 +462,56 @@ class SettingsTab extends PluginSettingTab {
 						new Notice(message, 10000);
 					});
 			});
+
+		// Sync Errors 상태 표시 추가
+		const createErrorSetting = async () => {
+			const { ErrorManager } = await import('./helpers/errorManager');
+			const errorManager = new ErrorManager(this.plugin);
+			const errorCount = await errorManager.getErrorCount();
+			
+			new Setting(containerEl)
+				.setName("Sync Errors")
+				.setDesc(errorCount > 0 
+					? `${errorCount} files failed to sync. These will be retried automatically on next sync.`
+					: "No sync errors. All files synced successfully."
+				)
+				.addButton((button) => {
+					button
+						.setButtonText("View Errors")
+						.setDisabled(errorCount === 0)
+						.onClick(async () => {
+							const errors = await errorManager.loadErrors();
+							if (errors.length === 0) {
+								new Notice("No sync errors found.");
+								return;
+							}
+							
+							const errorList = errors
+								.slice(0, 15)
+								.map(error => `${error.errorType.toUpperCase()}: ${error.filePath} (${error.retryCount} retries)`)
+								.join('\n');
+							
+							const message = `Sync Errors (${errors.length} files):\n\n${errorList}${errors.length > 15 ? `\n\n... and ${errors.length - 15} more errors` : ''}`;
+							new Notice(message, 12000);
+						});
+				})
+				.addButton((button) => {
+					button
+						.setButtonText("Clear Errors")
+						.setWarning()
+						.setDisabled(errorCount === 0)
+						.onClick(async () => {
+							if (confirm(`Are you sure you want to clear all ${errorCount} sync errors?`)) {
+								await errorManager.clearAllErrors();
+								new Notice("All sync errors cleared.");
+								// 설정 UI 새로고침
+								this.display();
+							}
+						});
+				});
+		};
+		
+		createErrorSetting();
 
 		// Reset 기능 추가
 		new Setting(containerEl)
