@@ -153,7 +153,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleCreate(file: TAbstractFile) {
 		if (file.path.includes(".DS_Store")) return;
-		if (file.path.endsWith("error.json")) return; // error.json 제외
+		if (file.path === `${this.manifest.dir}/error.json`) return; // error.json 제외
 		if (this.settings.operations[file.path] === "delete") {
 			if (file instanceof TFile) {
 				this.settings.operations[file.path] = "modify";
@@ -168,7 +168,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleDelete(file: TAbstractFile) {
 		if (file.path.includes(".DS_Store")) return;
-		if (file.path.endsWith("error.json")) return; // error.json 제외
+		if (file.path === `${this.manifest.dir}/error.json`) return; // error.json 제외
 		if (this.settings.operations[file.path] === "create") {
 			delete this.settings.operations[file.path];
 		} else {
@@ -179,7 +179,7 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleModify(file: TFile) {
 		if (file.path.includes(".DS_Store")) return;
-		if (file.path.endsWith("error.json")) return; // error.json 제외
+		if (file.path === `${this.manifest.dir}/error.json`) return; // error.json 제외
 		const operation = this.settings.operations[file.path];
 		if (operation === "create" || operation === "modify") {
 			return;
@@ -190,7 +190,8 @@ export default class ObsidianGoogleDrive extends Plugin {
 
 	handleRename(file: TAbstractFile, oldPath: string) {
 		if (file.path.includes(".DS_Store")) return;
-		if (file.path.endsWith("error.json") || oldPath.endsWith("error.json")) return; // error.json 제외
+		const errorFilePath = `${this.manifest.dir}/error.json`;
+		if (file.path === errorFilePath || oldPath === errorFilePath) return; // error.json 제외
 		this.handleDelete({ ...file, path: oldPath });
 		this.handleCreate(file);
 		this.debouncedSaveSettings();
@@ -463,10 +464,31 @@ class SettingsTab extends PluginSettingTab {
 					});
 			});
 
-		// Sync Errors 상태 표시 추가
-		const createErrorSetting = async () => {
+		// Sync Errors 상태 표시 추가 (비동기 처리 수정)
+		this.createErrorSetting(containerEl);
+
+		// Reset 기능 추가
+		new Setting(containerEl)
+			.setName("Reset Sync State")
+			.setDesc("Clear all tracked operations. Use only if you want to start fresh.")
+			.addButton((button) => {
+				button
+					.setButtonText("Clear Operations")
+					.setWarning()
+					.onClick(async () => {
+						if (confirm("Are you sure you want to clear all tracked file operations? This cannot be undone.")) {
+							this.plugin.settings.operations = {};
+							await this.plugin.saveSettings();
+							new Notice("All operations cleared. Use 'Scan All Files' to rebuild the sync queue.");
+						}
+					});
+			});
+	}
+
+	async createErrorSetting(containerEl: HTMLElement) {
+		try {
 			const { ErrorManager } = await import('./helpers/errorManager');
-			const errorManager = new ErrorManager(this.plugin);
+			const errorManager = ErrorManager.getInstance(this.plugin);
 			const errorCount = await errorManager.getErrorCount();
 			
 			new Setting(containerEl)
@@ -509,25 +531,17 @@ class SettingsTab extends PluginSettingTab {
 							}
 						});
 				});
-		};
-		
-		createErrorSetting();
-
-		// Reset 기능 추가
-		new Setting(containerEl)
-			.setName("Reset Sync State")
-			.setDesc("Clear all tracked operations. Use only if you want to start fresh.")
-			.addButton((button) => {
-				button
-					.setButtonText("Clear Operations")
-					.setWarning()
-					.onClick(async () => {
-						if (confirm("Are you sure you want to clear all tracked file operations? This cannot be undone.")) {
-							this.plugin.settings.operations = {};
-							await this.plugin.saveSettings();
-							new Notice("All operations cleared. Use 'Scan All Files' to rebuild the sync queue.");
-						}
-					});
-			});
+		} catch (error) {
+			console.error("Failed to create error setting:", error);
+			// 오류 발생 시 기본 메시지 표시
+			new Setting(containerEl)
+				.setName("Sync Errors")
+				.setDesc("Error loading sync error information.")
+				.addButton((button) => {
+					button
+						.setButtonText("Reload")
+						.onClick(() => this.display());
+				});
+		}
 	}
 }

@@ -508,10 +508,11 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 				
 				// 파일들 추가 (config 파일 및 error.json 제외)
 				folderContents.files.forEach(filePath => {
+					const errorFilePath = `${t.manifest.dir}/error.json`;
 					if (!filePath.startsWith('.obsidian/') && 
 						!filePath.includes('.DS_Store') &&
 						!filePath.includes('.git/') &&
-						!filePath.endsWith('error.json')) {
+						filePath !== errorFilePath) {
 						allFiles.push(filePath);
 					}
 				});

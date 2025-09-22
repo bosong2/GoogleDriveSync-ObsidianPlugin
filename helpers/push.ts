@@ -283,6 +283,12 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		Object.entries(t.settings.driveIdToPath).map(([id, path]) => [path, id])
 	);
 
+	// 전체 동기화 통계 추적
+	const errorManager = ErrorManager.getInstance(t);
+	let totalSuccessCount = 0;
+	let totalFailureCount = 0;
+	const totalOperations = creates.length + modifies.length;
+
 	const configOnDrive = await t.drive.searchFiles({
 		include: ["properties"],
 		matches: [{ properties: { config: "true" } }],
@@ -355,10 +361,6 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 		const notes = files.filter((file) => file instanceof TFile) as TFile[];
 
-		const errorManager = new ErrorManager(t);
-		let successCount = 0;
-		let failureCount = 0;
-
 		await batchAsyncs(
 			notes.map((note) => async () => {
 				try {
@@ -380,32 +382,25 @@ export const push = async (t: ObsidianGoogleDrive) => {
 					
 					// 성공 시 오류 기록에서 제거
 					await errorManager.removeErrors([note.path]);
-					successCount++;
+					totalSuccessCount++;
 					
 				} catch (error) {
 					console.error(`Failed to upload file ${note.path}:`, error);
 					await errorManager.addError(note.path, 'create', error);
-					failureCount++;
+					totalFailureCount++;
 				}
 
 				completed++;
-				const progressMsg = failureCount > 0 
-					? `Syncing... (${completed}/${files.length} files, ${failureCount} failed)`
+				const progressMsg = totalFailureCount > 0 
+					? `Syncing... (${totalSuccessCount + totalFailureCount}/${totalOperations} files, ${totalFailureCount} failed)`
 					: getSyncMessage(33, 66, completed, files.length);
 				syncNotice.setMessage(progressMsg);
 			})
 		);
-
-		// 최종 결과 표시
-		if (failureCount > 0) {
-			new Notice(`Upload completed: ${successCount} succeeded, ${failureCount} failed. Check sync errors in settings.`, 8000);
-		}
 	}
 
 	if (modifies.length) {
 		let completed = 0;
-		let modifySuccessCount = 0;
-		let modifyFailureCount = 0;
 
 		const files = modifies
 			.map(([path]) => vault.getFileByPath(path))
@@ -417,8 +412,6 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				id,
 			])
 		);
-
-		const errorManager = new ErrorManager(t);
 
 		await batchAsyncs(
 			files.map((file) => async () => {
@@ -435,26 +428,22 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 					// 성공 시 오류 기록에서 제거
 					await errorManager.removeErrors([file.path]);
-					modifySuccessCount++;
+					totalSuccessCount++;
 
 				} catch (error) {
 					console.error(`Failed to modify file ${file.path}:`, error);
 					await errorManager.addError(file.path, 'modify', error);
-					modifyFailureCount++;
+					totalFailureCount++;
 				}
 
 				completed++;
-				const progressMsg = modifyFailureCount > 0 
-					? `Syncing... (${completed}/${files.length} files, ${modifyFailureCount} failed)`
+				const currentTotal = totalSuccessCount + totalFailureCount;
+				const progressMsg = totalFailureCount > 0 
+					? `Syncing... (${currentTotal}/${totalOperations} files, ${totalFailureCount} failed)`
 					: getSyncMessage(66, 99, completed, files.length);
 				syncNotice.setMessage(progressMsg);
 			})
 		);
-
-		// 최종 결과 표시
-		if (modifyFailureCount > 0) {
-			new Notice(`Modify completed: ${modifySuccessCount} succeeded, ${modifyFailureCount} failed. Check sync errors in settings.`, 8000);
-		}
 	}
 
 	const configFilesToSync = await t.drive.getConfigFilesToSync();
@@ -539,5 +528,10 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 	await t.endSync(syncNotice, false);
 
-	new Notice("Sync complete!");
+	// 전체 동기화 결과 알림
+	if (totalFailureCount > 0) {
+		new Notice(`Sync completed: ${totalSuccessCount} succeeded, ${totalFailureCount} failed. Check sync errors in settings for details.`, 10000);
+	} else {
+		new Notice("Sync completed successfully! All files synced without errors.");
+	}
 };

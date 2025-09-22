@@ -48,12 +48,24 @@ export const classifyError = (error: any): SyncError['errorType'] => {
 };
 
 export class ErrorManager {
+    private static instance: ErrorManager | null = null;
     private t: ObsidianGoogleDrive;
     private errorFilePath: string;
 
-    constructor(plugin: ObsidianGoogleDrive) {
+    private constructor(plugin: ObsidianGoogleDrive) {
         this.t = plugin;
         this.errorFilePath = `${plugin.manifest.dir}/error.json`;
+    }
+
+    public static getInstance(plugin: ObsidianGoogleDrive): ErrorManager {
+        if (!ErrorManager.instance) {
+            ErrorManager.instance = new ErrorManager(plugin);
+        }
+        return ErrorManager.instance;
+    }
+
+    public static resetInstance(): void {
+        ErrorManager.instance = null;
     }
 
     async loadErrors(): Promise<SyncError[]> {
@@ -144,11 +156,11 @@ export class ErrorManager {
 
 // 하위 호환성을 위한 레거시 함수들
 export const readErrors = async (t: ObsidianGoogleDrive): Promise<SyncError[]> => {
-    const errorManager = new ErrorManager(t);
+    const errorManager = ErrorManager.getInstance(t);
     return await errorManager.loadErrors();
 };
 
 export const logError = async (t: ObsidianGoogleDrive, path: string, error: Error) => {
-    const errorManager = new ErrorManager(t);
+    const errorManager = ErrorManager.getInstance(t);
     await errorManager.addError(path, 'create', error);
 };
