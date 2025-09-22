@@ -9,6 +9,102 @@ import {
 } from "./drive";
 import { refreshAccessToken } from "./ky";
 
+interface ConflictInfo {
+	hasConflict: boolean;
+	reason: 'content_diff' | 'time_diff' | 'no_conflict';
+	localModified: number;
+	remoteModified: number;
+	sizeDiff: boolean;
+}
+
+// 충돌 감지 함수
+const detectConflict = async (t: ObsidianGoogleDrive, localFile: TFile, remoteFile: FileMetadata): Promise<ConflictInfo> => {
+	const localStat = await t.app.vault.adapter.stat(localFile.path);
+	const localModified = localStat?.mtime || 0;
+	const remoteModified = new Date(remoteFile.modifiedTime).getTime();
+	
+	// 시간 차이 임계값 (5초) - 네트워크 지연 고려
+	const timeDiffThreshold = 5000;
+	const timeDiff = Math.abs(localModified - remoteModified);
+	
+	// 파일 크기 비교
+	const localSize = localStat?.size || 0;
+	const localContent = await t.app.vault.readBinary(localFile);
+	const localContentSize = localContent.byteLength;
+	
+	// 원격 파일 크기는 metadata에서 가져올 수 없으므로 내용을 다운로드해서 비교
+	const remoteContent = await t.drive.getFile(remoteFile.id).arrayBuffer();
+	const sizeDiff = localContentSize !== remoteContent.byteLength;
+	
+	// 충돌 판정 로직
+	let hasConflict = false;
+	let reason: ConflictInfo['reason'] = 'no_conflict';
+	
+	if (sizeDiff) {
+		// 크기가 다르면 확실한 충돌
+		hasConflict = true;
+		reason = 'content_diff';
+	} else if (timeDiff > timeDiffThreshold) {
+		// 시간 차이가 크고 크기가 같으면 잠재적 충돌
+		// 내용을 실제로 비교
+		const localArray = new Uint8Array(localContent);
+		const remoteArray = new Uint8Array(remoteContent);
+		
+		// 바이트 단위 비교
+		for (let i = 0; i < localArray.length; i++) {
+			if (localArray[i] !== remoteArray[i]) {
+				hasConflict = true;
+				reason = 'content_diff';
+				break;
+			}
+		}
+		
+		if (!hasConflict && timeDiff > timeDiffThreshold) {
+			reason = 'time_diff';
+		}
+	}
+	
+	return {
+		hasConflict,
+		reason,
+		localModified,
+		remoteModified,
+		sizeDiff
+	};
+};
+
+// 충돌 처리 함수
+const handleConflict = async (t: ObsidianGoogleDrive, localFile: TFile, remoteFile: FileMetadata, conflict: ConflictInfo) => {
+	const localTime = new Date(conflict.localModified).toLocaleString();
+	const remoteTime = new Date(conflict.remoteModified).toLocaleString();
+	
+	// 충돌 파일 백업 생성
+	const backupPath = `${localFile.path}.conflict-${Date.now()}.backup`;
+	const remoteContent = await t.drive.getFile(remoteFile.id).arrayBuffer();
+	
+	try {
+		await t.app.vault.createBinary(backupPath, remoteContent);
+		
+		const message = `Sync Conflict Detected!\n\n` +
+			`File: ${localFile.path}\n` +
+			`Local modified: ${localTime}\n` +
+			`Remote modified: ${remoteTime}\n\n` +
+			`Remote version saved as:\n${backupPath}\n\n` +
+			`Please manually resolve the conflict.`;
+		
+		new Notice(message, 15000);
+		console.warn('Sync conflict:', {
+			file: localFile.path,
+			conflict,
+			backupPath
+		});
+		
+	} catch (error) {
+		console.error('Failed to create conflict backup:', error);
+		new Notice(`Conflict detected in ${localFile.path} but failed to create backup. Remote changes ignored.`, 8000);
+	}
+};
+
 export const pull = async (
 	t: ObsidianGoogleDrive,
 	silenceNotices?: boolean
@@ -25,12 +121,15 @@ export const pull = async (
 
 	if (!t.accessToken.token) await refreshAccessToken(t);
 
+	// 시간 정확도 개선: 마지막 동기화 시간에서 30초 여유를 둠 (네트워크 지연 고려)
+	const safeLastSyncTime = new Date(Math.max(0, t.settings.lastSyncedAt - 30000));
+	
 	const recentlyModified = await t.drive.searchFiles({
 		include: ["id", "modifiedTime", "properties", "mimeType"],
 		matches: [
 			{
 				modifiedTime: {
-					gt: new Date(t.settings.lastSyncedAt).toISOString(),
+					gt: safeLastSyncTime.toISOString(),
 				},
 			},
 		],
@@ -148,6 +247,7 @@ export const pull = async (
 		}
 
 		let completed = 0;
+		let conflictCount = 0; // 충돌 발생 횟수 추적
 
 		const newNotes = recentlyModified.filter(
 			({ mimeType }) => mimeType !== folderMimeType
@@ -162,7 +262,16 @@ export const pull = async (
 
 				completed++;
 
+				// 충돌 감지 및 처리
 				if (localFile && operation === "modify") {
+					// 로컬에서 수정 중이고 원격에서도 변경된 경우 = 충돌 상황
+					const conflict = await detectConflict(t, localFile as TFile, file);
+					if (conflict.hasConflict) {
+						await handleConflict(t, localFile as TFile, file, conflict);
+						conflictCount++;
+						return;
+					}
+					// 충돌이 없으면 원격 변경사항 무시 (로컬 우선)
 					return;
 				}
 
@@ -188,9 +297,11 @@ export const pull = async (
 				);
 			})
 		);
+		
+		return conflictCount;
 	};
 
-	await upsertFiles();
+	const conflictCount = await upsertFiles();
 
 	const deleteConfigs = async () => {
 		const configDeletions = await Promise.all(
@@ -283,5 +394,10 @@ export const pull = async (
 
 	await t.endSync(syncNotice);
 
-	new Notice("Files have been synced from Google Drive!");
+	// 충돌 발생 시 특별한 알림
+	if (conflictCount > 0) {
+		new Notice(`Pull completed with ${conflictCount} conflict(s). Please check .conflict.backup files and resolve manually.`, 10000);
+	} else {
+		new Notice("Files have been synced from Google Drive!");
+	}
 };

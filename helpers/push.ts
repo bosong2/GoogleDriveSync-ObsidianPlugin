@@ -288,6 +288,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 	let totalSuccessCount = 0;
 	let totalFailureCount = 0;
 	const totalOperations = creates.length + modifies.length;
+	const successfulOperations = new Set<string>();
 
 	const configOnDrive = await t.drive.searchFiles({
 		include: ["properties"],
@@ -312,7 +313,27 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		if (!deleteRequest) {
 			return new Notice("An error occurred deleting Google Drive files.");
 		}
-		deletes.forEach(([path]) => delete t.settings.driveIdToPath[path]);
+		deletes.forEach(([path]) => {
+			delete t.settings.driveIdToPath[path];
+			
+			// 폴더 삭제 시 하위 파일들의 매핑도 정리
+			if (path.endsWith('/') || vault.getAbstractFileByPath(path) instanceof TFolder) {
+				const pathsToRemove = Object.keys(t.settings.driveIdToPath).filter(id => {
+					const filePath = t.settings.driveIdToPath[id];
+					return filePath && filePath.startsWith(path + '/');
+				});
+				
+				pathsToRemove.forEach(id => {
+					const filePath = t.settings.driveIdToPath[id];
+					console.log(`Cleaning up deleted folder child: ${filePath}`);
+					delete t.settings.driveIdToPath[id];
+					// operations에서도 정리
+					if (t.settings.operations[filePath]) {
+						delete t.settings.operations[filePath];
+					}
+				});
+			}
+		});
 	}
 
 	syncNotice.setMessage("Syncing (33%)");
@@ -327,36 +348,35 @@ export const push = async (t: ObsidianGoogleDrive) => {
 			(file) => file instanceof TFolder
 		) as TFolder[];
 
+		// 폴더 우선 처리: 계층구조 순서대로 안전하게 생성
 		if (folders.length) {
-			const batches = foldersToBatches(folders);
-
-			for (const batch of batches) {
-				await batchAsyncs(
-					batch.map((folder) => async () => {
-						const id = await t.drive.createFolder({
-							name: folder.name,
-							parent: folder.parent
-								? pathsToIds[folder.parent.path]
-								: undefined,
-							properties: { path: folder.path },
-							modifiedTime: new Date().toISOString(),
-						});
-						if (!id) {
-							return new Notice(
-								"An error occurred creating Google Drive folders."
-							);
-						}
-
-						completed++;
-						syncNotice.setMessage(
-							getSyncMessage(33, 66, completed, files.length)
-						);
-
-						t.settings.driveIdToPath[id] = folder.path;
-						pathsToIds[folder.path] = id;
-					})
-				);
+			console.log('Processing folders in hierarchy order...');
+			const folderPaths = folders.map(f => f.path);
+			
+			try {
+				// 새로운 안전한 폴더 동기화 사용
+				await t.drive.syncFoldersHierarchy(folderPaths, pathsToIds);
+				
+				// 성공한 폴더들을 성공 목록에 추가
+				folderPaths.forEach(path => {
+					if (pathsToIds[path]) {
+						successfulOperations.add(path);
+						t.settings.driveIdToPath[pathsToIds[path]] = path;
+					}
+					completed++;
+				});
+				
+			} catch (error) {
+				console.error('Failed to sync folder hierarchy:', error);
+				if (error.message?.includes('vault root not available')) {
+					return new Notice('Cannot sync: Google Drive vault root is missing and could not be created. Please check your permissions and network connection.');
+				}
+				throw error;
 			}
+			
+			syncNotice.setMessage(
+				getSyncMessage(33, 50, completed, files.length)
+			);
 		}
 
 		const notes = files.filter((file) => file instanceof TFile) as TFile[];
@@ -364,10 +384,15 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		await batchAsyncs(
 			notes.map((note) => async () => {
 				try {
+					// 루트 레벨 파일의 경우 vault root 폴더 ID를 사용
+					const parentId = note.parent 
+						? pathsToIds[note.parent.path] 
+						: await t.drive.getRootFolderId();
+					
 					const id = await t.drive.uploadFile(
 						new Blob([await vault.readBinary(note)]),
 						note.name,
-						note.parent ? pathsToIds[note.parent.path] : undefined,
+						parentId,
 						{
 							properties: { path: note.path },
 							modifiedTime: new Date().toISOString(),
@@ -380,8 +405,9 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 					t.settings.driveIdToPath[id] = note.path;
 					
-					// 성공 시 오류 기록에서 제거
+					// 성공 시 오류 기록에서 제거 및 성공 작업 추적
 					await errorManager.removeErrors([note.path]);
+					successfulOperations.add(note.path);
 					totalSuccessCount++;
 					
 				} catch (error) {
@@ -393,7 +419,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				completed++;
 				const progressMsg = totalFailureCount > 0 
 					? `Syncing... (${totalSuccessCount + totalFailureCount}/${totalOperations} files, ${totalFailureCount} failed)`
-					: getSyncMessage(33, 66, completed, files.length);
+					: getSyncMessage(50, 66, completed, notes.length);
 				syncNotice.setMessage(progressMsg);
 			})
 		);
@@ -416,6 +442,10 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		await batchAsyncs(
 			files.map((file) => async () => {
 				try {
+					if (!pathToId[file.path]) {
+						throw new Error("No file ID found for modify operation");
+					}
+					
 					const id = await t.drive.updateFile(
 						pathToId[file.path],
 						new Blob([await vault.readBinary(file)]),
@@ -426,14 +456,26 @@ export const push = async (t: ObsidianGoogleDrive) => {
 						throw new Error("Failed to update file on Google Drive");
 					}
 
-					// 성공 시 오류 기록에서 제거
+					// 성공 시 오류 기록에서 제거 및 성공 작업 추적
 					await errorManager.removeErrors([file.path]);
+					successfulOperations.add(file.path);
 					totalSuccessCount++;
 
-				} catch (error) {
-					console.error(`Failed to modify file ${file.path}:`, error);
-					await errorManager.addError(file.path, 'modify', error);
-					totalFailureCount++;
+				} catch (error: any) {
+					// 404 오류 시 파일이 삭제된 것으로 간주하고 create로 변경
+					if (error?.response?.status === 404) {
+						console.log(`File ${file.path} not found on Drive for modify, changing to create operation...`);
+						// modify → create로 변경
+						t.settings.operations[file.path] = "create";
+						// 기존 ID 매핑 제거
+						if (pathToId[file.path]) {
+							delete t.settings.driveIdToPath[pathToId[file.path]];
+						}
+					} else {
+						console.error(`Failed to modify file ${file.path}:`, error);
+						await errorManager.addError(file.path, 'modify', error);
+						totalFailureCount++;
+					}
 				}
 
 				completed++;
@@ -461,47 +503,50 @@ export const push = async (t: ObsidianGoogleDrive) => {
 	});
 
 	if (foldersToCreate.size) {
-		const batches = foldersToBatches(Array.from(foldersToCreate));
-
-		for (const batch of batches) {
-			await batchAsyncs(
-				batch.map((folder) => async () => {
-					const id = await t.drive.createFolder({
-						name: folder.split("/").pop() || "",
-						parent: pathsToIds[
-							folder.split("/").slice(0, -1).join("/")
-						],
-						properties: { path: folder, config: "true" },
-						modifiedTime: new Date().toISOString(),
-					});
-					if (!id) {
-						return new Notice(
-							"An error occurred creating Google Drive folders."
-						);
-					}
-
-					t.settings.driveIdToPath[id] = folder;
-					pathsToIds[folder] = id;
-				})
-			);
+		console.log('Creating config folders in hierarchy order...');
+		// Config 폴더도 계층구조 순서로 안전하게 생성
+		await t.drive.syncFoldersHierarchy(Array.from(foldersToCreate), pathsToIds);
+		
+		// 생성된 폴더들에 config 속성 추가
+		for (const folder of foldersToCreate) {
+			if (pathsToIds[folder]) {
+				// config 속성을 별도로 업데이트 (필요한 경우)
+				t.settings.driveIdToPath[pathsToIds[folder]] = folder;
+			}
 		}
 	}
 
 	await batchAsyncs(
 		configFilesToSync.map((path) => async () => {
 			if (pathsToIds[path]) {
-				await t.drive.updateFile(
-					pathsToIds[path],
-					new Blob([await adapter.readBinary(path)]),
-					{ modifiedTime: new Date().toISOString() }
-				);
-				return;
+				try {
+					await t.drive.updateFile(
+						pathsToIds[path],
+						new Blob([await adapter.readBinary(path)]),
+						{ modifiedTime: new Date().toISOString() }
+					);
+					return;
+				} catch (error: any) {
+					// 404 오류 시 파일이 삭제된 것으로 간주하고 새로 생성
+					if (error?.response?.status === 404) {
+						console.log(`Config file ${path} not found on Drive, creating new file...`);
+						delete t.settings.driveIdToPath[pathsToIds[path]];
+						delete pathsToIds[path];
+						// ID를 제거했으므로 아래 로직에서 새로 생성됨
+					} else {
+						throw error; // 다른 오류는 그대로 던짐
+					}
+				}
 			}
 
+			// 부모 폴더 경로 계산 (루트 레벨 파일 고려)
+			const parentPath = path.split("/").slice(0, -1).join("/");
+			const parentId = parentPath ? pathsToIds[parentPath] : await t.drive.getRootFolderId();
+			
 			const id = await t.drive.uploadFile(
 				new Blob([await adapter.readBinary(path)]),
 				fileNameFromPath(path),
-				pathsToIds[path.split("/").slice(0, -1).join("/")],
+				parentId,
 				{
 					properties: { path, config: "true" },
 					modifiedTime: new Date().toISOString(),
@@ -518,13 +563,52 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		})
 	);
 
-	await t.drive.updateFile(
-		pathsToIds[vault.configDir + "/plugins/google-drive-sync/data.json"],
-		new Blob([JSON.stringify(t.settings, null, 2)]),
-		{ modifiedTime: new Date().toISOString() }
-	);
+	// data.json 업데이트 (404 오류 시 새로 생성)
+	const dataJsonPath = vault.configDir + "/plugins/google-drive-sync/data.json";
+	const dataJsonId = pathsToIds[dataJsonPath];
+	
+	try {
+		if (dataJsonId) {
+			await t.drive.updateFile(
+				dataJsonId,
+				new Blob([JSON.stringify(t.settings, null, 2)]),
+				{ modifiedTime: new Date().toISOString() }
+			);
+		} else {
+			throw new Error("No data.json ID found, creating new file");
+		}
+	} catch (error: any) {
+		// 404 오류 또는 ID가 없는 경우 새로 생성
+		if (error?.response?.status === 404 || !dataJsonId) {
+			console.log("data.json not found on Drive, creating new file...");
+			const newId = await t.drive.uploadFile(
+				new Blob([JSON.stringify(t.settings, null, 2)]),
+				"data.json",
+				pathsToIds[vault.configDir + "/plugins/google-drive-sync"],
+				{
+					properties: { path: dataJsonPath, config: "true" },
+					modifiedTime: new Date().toISOString(),
+				}
+			);
+			if (newId) {
+				t.settings.driveIdToPath[newId] = dataJsonPath;
+				pathsToIds[dataJsonPath] = newId;
+			}
+		} else {
+			throw error; // 다른 오류는 그대로 던짐
+		}
+	}
 
-	t.settings.operations = {};
+	// 성공한 작업만 operations에서 제거, 실패한 작업은 다음 Push에서 재시도되도록 유지
+	deletes.forEach(([path]) => {
+		delete t.settings.operations[path]; // Delete 작업은 항상 성공으로 간주
+	});
+	
+	successfulOperations.forEach(path => {
+		delete t.settings.operations[path]; // 성공한 create/modify 작업만 제거
+	});
+	
+	// 실패한 작업들은 t.settings.operations에 그대로 유지됨
 
 	await t.endSync(syncNotice, false);
 

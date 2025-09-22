@@ -2,7 +2,7 @@ import { App } from "obsidian";
 import ky from "ky";
 import ObsidianGoogleDrive from "main";
 import { getDriveKy } from "./ky";
-import { TAbstractFile, TFolder } from "obsidian";
+import { TAbstractFile, TFolder, TFile } from "obsidian";
 
 export interface FileMetadata {
 	id: string;
@@ -160,30 +160,45 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	};
 
 	const getRootFolderId = async () => {
+		console.log('Getting vault root folder ID...');
 		const files = await searchFiles(
 			{
 				matches: [{ properties: { obsidian: "vault" } }],
 			},
 			true
 		);
-		if (!files) return;
+		if (!files) {
+			console.error('Failed to search for vault root folder');
+			return;
+		}
 		if (!files.length) {
-			const rootFolder = await drive
-				.post(`drive/v3/files`, {
-					json: {
-						name: t.app.vault.getName(),
-						mimeType: folderMimeType,
-						description: "Obsidian Vault: " + t.app.vault.getName(),
-						properties: {
-							obsidian: "vault",
-							vault: t.app.vault.getName(),
+			console.log('Vault root folder not found, creating new one...');
+			try {
+				const rootFolder = await drive
+					.post(`drive/v3/files`, {
+						json: {
+							name: t.app.vault.getName(),
+							mimeType: folderMimeType,
+							description: "Obsidian Vault: " + t.app.vault.getName(),
+							properties: {
+								obsidian: "vault",
+								vault: t.app.vault.getName(),
+							},
 						},
-					},
-				})
-				.json<any>();
-			if (!rootFolder) return;
-			return rootFolder.id as string;
+					})
+					.json<any>();
+				if (!rootFolder) {
+					console.error('Failed to create vault root folder');
+					return;
+				}
+				console.log(`Created vault root folder: ${rootFolder.id}`);
+				return rootFolder.id as string;
+			} catch (error) {
+				console.error('Error creating vault root folder:', error);
+				return;
+			}
 		} else {
+			console.log(`Found existing vault root folder: ${files[0].id}`);
 			return files[0].id as string;
 		}
 	};
@@ -203,11 +218,27 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	}) => {
 		if (!parent) {
 			parent = await getRootFolderId();
-			if (!parent) return;
+			if (!parent) {
+				console.error('Failed to get or create vault root folder');
+				throw new Error('Cannot create folder: vault root not available');
+			}
 		}
 
 		if (!properties) properties = {};
 		if (!properties.vault) properties.vault = t.app.vault.getName();
+
+		// 중복 폴더 체크: 같은 부모 아래 같은 이름의 폴더가 이미 있는지 확인
+		const existingFolders = await searchFiles({
+			include: ["id", "name"],
+			matches: [
+				{ name, mimeType: folderMimeType, parent }
+			],
+		});
+
+		if (existingFolders && existingFolders.length > 0) {
+			console.log(`Folder '${name}' already exists in parent ${parent}, using existing ID: ${existingFolders[0].id}`);
+			return existingFolders[0].id;
+		}
 
 		const folder = await drive
 			.post(`drive/v3/files`, {
@@ -502,17 +533,62 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		const allFolders: string[] = [];
 		const { vault } = t.app;
 		
+		console.log('Starting vault scan using Obsidian API...');
+		
+		// Obsidian API로 모든 파일 가져오기 (더 안전함)
+		const allVaultFiles = vault.getAllLoadedFiles();
+		const errorFilePath = `${t.manifest.dir}/error.json`;
+		
+		allVaultFiles.forEach(file => {
+			// 파일인 경우
+			if (file instanceof TFile) {
+				if (!file.path.startsWith('.obsidian/') && 
+					!file.path.includes('.DS_Store') &&
+					!file.path.includes('.git/') &&
+					file.path !== errorFilePath) {
+					allFiles.push(file.path);
+					console.log(`File added via API: ${file.path}`);
+				} else {
+					console.log(`File excluded via API: ${file.path}`);
+				}
+			}
+			// 폴더인 경우  
+			else if (file instanceof TFolder) {
+				if (!file.path.startsWith('.obsidian/') && 
+					!file.path.includes('.git/')) {
+					allFolders.push(file.path);
+					console.log(`Folder added via API: ${file.path}`);
+				} else {
+					console.log(`Folder excluded via API: ${file.path}`);
+				}
+			}
+		});
+		
+		console.log(`API scan complete: ${allFiles.length} files, ${allFolders.length} folders`);
+		
+		// 기존 adapter 방식도 병행 (비교용)
+		console.log('Also running adapter-based scan for comparison...');
+		
 		const scanFolder = async (folderPath: string) => {
 			try {
 				const folderContents = await vault.adapter.list(folderPath);
 				
+				console.log(`Scanning folder '${folderPath}':`, {
+					files: folderContents.files,
+					folders: folderContents.folders
+				});
+				
 				// 파일들 추가 (config 파일 및 error.json 제외)
 				folderContents.files.forEach(filePath => {
 					const errorFilePath = `${t.manifest.dir}/error.json`;
-					if (!filePath.startsWith('.obsidian/') && 
+					const shouldInclude = !filePath.startsWith('.obsidian/') && 
 						!filePath.includes('.DS_Store') &&
 						!filePath.includes('.git/') &&
-						filePath !== errorFilePath) {
+						filePath !== errorFilePath;
+					
+					console.log(`File '${filePath}': ${shouldInclude ? 'INCLUDED' : 'EXCLUDED'}`);
+					
+					if (shouldInclude) {
 						allFiles.push(filePath);
 					}
 				});
@@ -531,6 +607,14 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		};
 		
 		await scanFolder('');
+		
+		console.log('Final scan results:', {
+			totalFiles: allFiles.length,
+			totalFolders: allFolders.length,
+			sampleFiles: allFiles.slice(0, 5),
+			sampleFolders: allFolders.slice(0, 5)
+		});
+		
 		return { files: allFiles, folders: allFolders };
 	};
 
@@ -553,6 +637,63 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	};
 
 	// 폴더 구조를 안전하게 순차 생성
+	const syncFoldersHierarchy = async (folderPaths: string[], pathsToIds: Record<string, string>) => {
+		// 폴더를 깊이별로 정렬 (root부터 처리)
+		const sortedPaths = folderPaths.sort((a, b) => {
+			const depthA = a.split('/').length;
+			const depthB = b.split('/').length;
+			if (depthA !== depthB) return depthA - depthB;
+			return a.localeCompare(b); // 같은 깊이면 알파벳 순
+		});
+
+		console.log('Syncing folders in hierarchy order:', sortedPaths);
+
+		for (const folderPath of sortedPaths) {
+			// 이미 ID가 있는 폴더는 건너뛰기
+			if (pathsToIds[folderPath]) {
+				continue;
+			}
+
+			const parts = folderPath.split('/');
+			const folderName = parts[parts.length - 1];
+			const parentPath = parts.slice(0, -1).join('/');
+			
+			// 부모 폴더 ID 찾기
+			let parentId: string | undefined;
+			if (parentPath) {
+				parentId = pathsToIds[parentPath];
+				if (!parentId) {
+					console.error(`Parent folder not found for ${folderPath}, parent: ${parentPath}`);
+					continue;
+				}
+			}
+
+			try {
+				const folderId = await createFolder({
+					name: folderName,
+					parent: parentId,
+					properties: { path: folderPath },
+					modifiedTime: new Date().toISOString(),
+				});
+
+				if (folderId) {
+					pathsToIds[folderPath] = folderId;
+					console.log(`Created/found folder: ${folderPath} -> ${folderId}`);
+				} else {
+					console.error(`No folder ID returned for ${folderPath}`);
+				}
+			} catch (error) {
+				console.error(`Failed to create folder ${folderPath}:`, error);
+				// vault root 문제인 경우 전체 프로세스 중단
+				if (error.message?.includes('vault root not available')) {
+					throw error;
+				}
+			}
+		}
+
+		return pathsToIds;
+	};
+
 	const createFoldersSequentially = async (folderPaths: string[]) => {
 		// 폴더 깊이별로 정렬 (얕은 것부터)
 		const sortedFolders = folderPaths.sort((a, b) => {
@@ -612,7 +753,15 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		try {
 			const { files, folders } = await getAllVaultFiles();
 			
+			console.log('Initial sync scan results:', {
+				filesFound: files.length,
+				foldersFound: folders.length,
+				files: files.slice(0, 10), // 처음 10개만 로깅
+				folders: folders.slice(0, 10)
+			});
+			
 			if (files.length === 0 && folders.length === 0) {
+				console.warn('No files or folders found during initial sync scan');
 				return { success: true, message: 'No files to sync', filesAdded: 0, foldersCreated: 0 };
 			}
 
@@ -628,12 +777,17 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 
 			// 2. 파일들을 operations에 추가
 			let filesAdded = 0;
+			console.log(`Adding ${files.length} files to operations queue...`);
 			files.forEach(filePath => {
 				if (!t.settings.operations[filePath]) {
 					t.settings.operations[filePath] = "create";
 					filesAdded++;
+					console.log(`Added to operations: ${filePath}`);
+				} else {
+					console.log(`Already in operations: ${filePath} (${t.settings.operations[filePath]})`);
 				}
 			});
+			console.log(`Operations added: ${filesAdded} new files`);
 
 			// 설정 저장
 			await t.saveSettings();
@@ -683,6 +837,7 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		getAllVaultFiles,
 		isFirstTimeSync,
 		createFoldersSequentially,
+		syncFoldersHierarchy,
 		performInitialSync,
 	};
 };
@@ -709,13 +864,32 @@ export const checkServer = async (app: App, url: string) => {
 
 export const batchAsyncs = async (
 	requests: (() => Promise<any>)[],
-	batchSize = 10
+	batchSize?: number
 ) => {
+	// 동적 배치 크기 계산: 요청 수에 따라 적응적으로 조정
+	const adaptiveBatchSize = batchSize || Math.min(20, Math.max(5, Math.ceil(requests.length / 4)));
+	
 	const results = [];
-	for (let i = 0; i < requests.length; i += batchSize) {
-		const batch = requests.slice(i, i + batchSize);
-		results.push(...(await Promise.all(batch.map((request) => request()))));
+	const batches = [];
+	
+	// 모든 배치를 미리 생성
+	for (let i = 0; i < requests.length; i += adaptiveBatchSize) {
+		const batch = requests.slice(i, i + adaptiveBatchSize);
+		batches.push(batch);
 	}
+	
+	// 모든 배치를 동시에 처리 (순차 대기 제거)
+	const batchPromises = batches.map(async (batch) => {
+		return Promise.all(batch.map((request) => request()));
+	});
+	
+	const batchResults = await Promise.all(batchPromises);
+	
+	// 결과 평탄화
+	for (const batchResult of batchResults) {
+		results.push(...batchResult);
+	}
+	
 	return results;
 };
 
