@@ -381,13 +381,42 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 		const notes = files.filter((file) => file instanceof TFile) as TFile[];
 
+		// vault root ID를 한 번만 가져와서 재사용
+		const vaultRootId = await t.drive.getRootFolderId();
+		if (!vaultRootId) {
+			throw new Error("Cannot get vault root folder ID");
+		}
+
 		await batchAsyncs(
 			notes.map((note) => async () => {
 				try {
 					// 루트 레벨 파일의 경우 vault root 폴더 ID를 사용
-					const parentId = note.parent 
-						? pathsToIds[note.parent.path] 
-						: await t.drive.getRootFolderId();
+					let parentId: string | undefined;
+					
+					if (note.parent && note.parent.path !== "/") {
+						// 실제 폴더에 있는 파일인 경우 (root가 아닌)
+						parentId = pathsToIds[note.parent.path];
+						if (!parentId) {
+							console.warn(`Parent folder ID not found for ${note.path}, parent: ${note.parent.path}. Using vault root instead.`);
+							parentId = vaultRootId;
+						}
+					} else {
+						// 루트 레벨 파일인 경우 (note.parent가 null이거나 path가 "/")
+						parentId = vaultRootId;
+					}
+					
+					// 안전장치: parentId가 여전히 없으면 에러
+					if (!parentId) {
+						throw new Error(`Cannot determine parent folder ID for file: ${note.path}`);
+					}
+					
+					// 디버깅: 파일 업로드 상세 정보 로그
+					console.log(`Uploading file: ${note.path}`, {
+						hasParent: !!note.parent,
+						parentPath: note.parent?.path,
+						parentId: parentId,
+						pathsToIdsEntries: Object.entries(pathsToIds).slice(0, 3) // 처음 3개 매핑만
+					});
 					
 					const id = await t.drive.uploadFile(
 						new Blob([await vault.readBinary(note)]),
@@ -516,6 +545,12 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		}
 	}
 
+	// config 파일용 vault root ID도 한 번만 가져와서 재사용
+	const configVaultRootId = await t.drive.getRootFolderId();
+	if (!configVaultRootId) {
+		throw new Error("Cannot get vault root folder ID for config files");
+	}
+
 	await batchAsyncs(
 		configFilesToSync.map((path) => async () => {
 			if (pathsToIds[path]) {
@@ -541,7 +576,28 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 			// 부모 폴더 경로 계산 (루트 레벨 파일 고려)
 			const parentPath = path.split("/").slice(0, -1).join("/");
-			const parentId = parentPath ? pathsToIds[parentPath] : await t.drive.getRootFolderId();
+			let parentId: string | undefined;
+			
+			if (parentPath && parentPath !== "/") {
+				parentId = pathsToIds[parentPath];
+				if (!parentId) {
+					console.warn(`Parent folder ID not found for config file ${path}, parent: ${parentPath}. Using vault root instead.`);
+					parentId = configVaultRootId;
+				}
+			} else {
+				// 루트 레벨 config 파일인 경우 (parentPath가 빈 문자열이거나 "/")
+				parentId = configVaultRootId;
+			}
+			
+			if (!parentId) {
+				throw new Error(`Cannot determine parent folder ID for config file: ${path}`);
+			}
+			
+			console.log(`Uploading config file: ${path}`, {
+				parentPath,
+				parentId,
+				pathsToIdsHasParent: !!pathsToIds[parentPath]
+			});
 			
 			const id = await t.drive.uploadFile(
 				new Blob([await adapter.readBinary(path)]),

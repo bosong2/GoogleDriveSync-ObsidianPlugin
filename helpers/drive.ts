@@ -555,11 +555,12 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 			// 폴더인 경우  
 			else if (file instanceof TFolder) {
 				if (!file.path.startsWith('.obsidian/') && 
-					!file.path.includes('.git/')) {
+					!file.path.includes('.git/') &&
+					file.path !== '/' && file.path !== '') {  // 루트 폴더 제외
 					allFolders.push(file.path);
 					console.log(`Folder added via API: ${file.path}`);
 				} else {
-					console.log(`Folder excluded via API: ${file.path}`);
+					console.log(`Folder excluded via API: ${file.path} (${file.path === '/' ? 'root folder' : 'config/system folder'})`);
 				}
 			}
 		});
