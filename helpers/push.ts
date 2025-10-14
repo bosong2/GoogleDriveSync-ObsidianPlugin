@@ -260,23 +260,67 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)
 	); // Alphabetical
 
+	// operations가 없으면 동기화할 파일이 없다고 알림
+	if (initialOperations.length === 0) {
+		new Notice("No files to sync. Use 'Scan All Files' to add files to the sync queue.");
+		return;
+	}
+
 	const { vault } = t.app;
 	const adapter = vault.adapter;
 
-	const proceed = await new Promise<boolean>((resolve) => {
-		new ConfirmPushModal(t, initialOperations, resolve).open();
-	});
-
-	if (!proceed) return;
-
+	// 확인 모달 없이 바로 동기화 시작
 	const syncNotice = await t.startSync();
 
 	await pull(t, true);
 
 	const operations = Object.entries(t.settings.operations);
 
-	const deletes = operations.filter(([_, op]) => op === "delete");
-	const creates = operations.filter(([_, op]) => op === "create");
+	// 원작자와 동일: 단순히 DELETE → CREATE → MODIFY 순서로 처리
+	const deletes = operations
+		.filter(([_, op]) => op === "delete")
+		.sort(([pathA], [pathB]) => {
+			// 1. 깊이가 깊은 것부터 삭제
+			const depthA = pathA.split('/').length;
+			const depthB = pathB.split('/').length;
+			if (depthA !== depthB) return depthB - depthA;
+			
+			// 2. 같은 깊이에서는 파일이 폴더보다 먼저 삭제되도록
+			const { vault } = t.app;
+			const fileA = vault.getAbstractFileByPath(pathA);
+			const fileB = vault.getAbstractFileByPath(pathB);
+			const isFileA = fileA instanceof TFile;
+			const isFileB = fileB instanceof TFile;
+			
+			if (isFileA && !isFileB) return -1; // A가 파일, B가 폴더면 A 먼저
+			if (!isFileA && isFileB) return 1;  // A가 폴더, B가 파일이면 B 먼저
+			
+			// 3. 같은 타입이면 알파벳 역순
+			return pathB.localeCompare(pathA);
+		});
+		
+	const creates = operations
+		.filter(([_, op]) => op === "create")
+		.sort(([pathA], [pathB]) => {
+			// 1. 얕은 깊이부터 생성 (상위 폴더 먼저)
+			const depthA = pathA.split('/').length;
+			const depthB = pathB.split('/').length;
+			if (depthA !== depthB) return depthA - depthB;
+			
+			// 2. 같은 깊이에서는 폴더가 파일보다 먼저 생성되도록
+			const { vault } = t.app;
+			const fileA = vault.getAbstractFileByPath(pathA);
+			const fileB = vault.getAbstractFileByPath(pathB);
+			const isFolderA = fileA instanceof TFolder;
+			const isFolderB = fileB instanceof TFolder;
+			
+			if (isFolderA && !isFolderB) return -1; // A가 폴더, B가 파일이면 A 먼저
+			if (!isFolderA && isFolderB) return 1;  // A가 파일, B가 폴더면 B 먼저
+			
+			// 3. 같은 타입이면 알파벳 순
+			return pathA.localeCompare(pathB);
+		});
+		
 	const modifies = operations.filter(([_, op]) => op === "modify");
 
 	const pathsToIds = Object.fromEntries(
@@ -306,12 +350,34 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		})
 	);
 
+	// 1단계: 삭제 작업 처리
 	if (deletes.length) {
-		const deleteRequest = await t.drive.batchDelete(
-			deletes.map(([path]) => pathsToIds[path])
-		);
-		if (!deleteRequest) {
-			return new Notice("An error occurred deleting Google Drive files.");
+		console.log('Processing deletes in sorted order:', deletes.map(([path]) => path));
+		const deleteIds = deletes.map(([path]) => {
+			const id = pathsToIds[path];
+			console.log(`Delete mapping: ${path} -> ${id}`);
+			return id;
+		}).filter(id => id); // undefined 제거
+		
+		console.log('Delete IDs to send:', deleteIds);
+		
+		if (deleteIds.length === 0) {
+			console.warn('No valid IDs found for deletion');
+			new Notice("Warning: Some files could not be deleted from Google Drive (IDs not found).");
+		} else {
+			try {
+				const deleteRequest = await t.drive.batchDelete(deleteIds);
+				if (!deleteRequest) {
+					console.error('Delete request failed - no response');
+					new Notice("An error occurred deleting Google Drive files.");
+					return;
+				}
+				console.log('Delete request completed successfully');
+			} catch (error) {
+				console.error('Delete request error:', error);
+				new Notice("An error occurred deleting Google Drive files: " + error.message);
+				return;
+			}
 		}
 		deletes.forEach(([path]) => {
 			delete t.settings.driveIdToPath[path];
@@ -336,9 +402,10 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		});
 	}
 
-	syncNotice.setMessage("Syncing (33%)");
+	syncNotice.setMessage("Syncing 0% (0/" + totalOperations + ")");
 
 	if (creates.length) {
+		console.log('Processing creates in sorted order:', creates.map(([path]) => path));
 		let completed = 0;
 		const files = creates.map(([path]) =>
 			vault.getAbstractFileByPath(path)
@@ -374,9 +441,9 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				throw error;
 			}
 			
-			syncNotice.setMessage(
-				getSyncMessage(33, 50, completed, files.length)
-			);
+			const foldersCompleted = folders.length;
+			const percentage = Math.floor((foldersCompleted / totalOperations) * 100);
+			syncNotice.setMessage(`Syncing ${percentage}% (${foldersCompleted}/${totalOperations}) - Folders created`);
 		}
 
 		const notes = files.filter((file) => file instanceof TFile) as TFile[];
@@ -415,8 +482,22 @@ export const push = async (t: ObsidianGoogleDrive) => {
 						hasParent: !!note.parent,
 						parentPath: note.parent?.path,
 						parentId: parentId,
-						pathsToIdsEntries: Object.entries(pathsToIds).slice(0, 3) // 처음 3개 매핑만
+						relevantMappings: Object.entries(pathsToIds).filter(([path]) => 
+							path.includes('Books') || path.includes('test')
+						)
 					});
+					
+					// 부모 폴더 ID 검증
+					if (note.parent && note.parent.path !== "/" && parentId) {
+						console.log(`Verifying parent folder ID: ${parentId} for path: ${note.parent.path}`);
+						try {
+							const parentExists = await t.drive.getFileMetadata(parentId);
+							console.log(`Parent folder verification result:`, parentExists);
+						} catch (error) {
+							console.error(`Parent folder verification failed:`, error);
+							console.log(`Available pathsToIds mappings:`, Object.entries(pathsToIds));
+						}
+					}
 					
 					const id = await t.drive.uploadFile(
 						new Blob([await vault.readBinary(note)]),
@@ -446,9 +527,11 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				}
 
 				completed++;
+				const currentTotal = totalSuccessCount + totalFailureCount;
+				const percentage = Math.floor((currentTotal / totalOperations) * 100);
 				const progressMsg = totalFailureCount > 0 
-					? `Syncing... (${totalSuccessCount + totalFailureCount}/${totalOperations} files, ${totalFailureCount} failed)`
-					: getSyncMessage(50, 66, completed, notes.length);
+					? `Syncing ${percentage}% (${currentTotal}/${totalOperations}, ${totalFailureCount} failed)`
+					: `Syncing ${percentage}% (${currentTotal}/${totalOperations})`;
 				syncNotice.setMessage(progressMsg);
 			})
 		);
@@ -509,13 +592,15 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 				completed++;
 				const currentTotal = totalSuccessCount + totalFailureCount;
+				const percentage = Math.floor((currentTotal / totalOperations) * 100);
 				const progressMsg = totalFailureCount > 0 
-					? `Syncing... (${currentTotal}/${totalOperations} files, ${totalFailureCount} failed)`
-					: getSyncMessage(66, 99, completed, files.length);
+					? `Syncing ${percentage}% (${currentTotal}/${totalOperations}, ${totalFailureCount} failed)`
+					: `Syncing ${percentage}% (${currentTotal}/${totalOperations})`;
 				syncNotice.setMessage(progressMsg);
 			})
 		);
 	}
+
 
 	const configFilesToSync = await t.drive.getConfigFilesToSync();
 

@@ -121,8 +121,8 @@ export const pull = async (
 
 	if (!t.accessToken.token) await refreshAccessToken(t);
 
-	// 시간 정확도 개선: 마지막 동기화 시간에서 30초 여유를 둠 (네트워크 지연 고려)
-	const safeLastSyncTime = new Date(Math.max(0, t.settings.lastSyncedAt - 30000));
+	// 원작자와 동일한 시간 비교 (여유 시간 제거)
+	const safeLastSyncTime = new Date(t.settings.lastSyncedAt);
 	
 	const recentlyModified = await t.drive.searchFiles({
 		include: ["id", "modifiedTime", "properties", "mimeType"],

@@ -56,10 +56,9 @@ const queryHandlers = {
 	starred: (starred: boolean) => `starred=${starred}`,
 	query: (query: string) => `fullText contains '${query}'`,
 	properties: (properties: Record<string, string>) =>
-		Object.entries(properties).map(
-			([key, value]) =>
-				`properties has { key='${key}' and value='${value}' }`
-		),
+		Object.entries(properties)
+			.map(([key, value]) => `properties has { key='${key}' and value='${value}' }`)
+			.join(" and "),
 	modifiedTime: (modifiedTime: DateComparison) => {
 		if ("eq" in modifiedTime) return `modifiedTime='${modifiedTime.eq}'`;
 		if ("gt" in modifiedTime) return `modifiedTime>'${modifiedTime.gt}'`;
@@ -372,6 +371,13 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	};
 
 	const batchDelete = async (ids: string[]) => {
+		console.log(`batchDelete called with IDs:`, ids);
+		
+		if (!ids.length) {
+			console.warn('batchDelete: No IDs provided');
+			return false;
+		}
+
 		const body = new FormData();
 
 		// Loop through file IDs to create each delete request
@@ -390,16 +396,37 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 
 		body.append("", "--batch_boundary--");
 
-		const result = await drive
-			.post(`batch/drive/v3`, {
-				headers: {
-					"Content-Type": "multipart/mixed; boundary=batch_boundary",
-				},
-				body,
-			})
-			.text();
-		if (!result) return;
-		return result;
+		try {
+			const result = await drive
+				.post(`batch/drive/v3`, {
+					headers: {
+						"Content-Type": "multipart/mixed; boundary=batch_boundary",
+					},
+					body,
+				})
+				.text();
+			
+			console.log(`batchDelete response:`, result);
+			
+			if (!result) {
+				console.error('batchDelete: No response from Google Drive');
+				return false;
+			}
+			
+			// 성공/실패 여부를 응답에서 확인 (Google Drive delete는 204 No Content 반환)
+			const successPattern = /HTTP\/1\.1 (200 OK|204 No Content)/g;
+			const errorPattern = /HTTP\/1\.1 4\d\d|HTTP\/1\.1 5\d\d/g;
+			
+			const successCount = (result.match(successPattern) || []).length;
+			const errorCount = (result.match(errorPattern) || []).length;
+			
+			console.log(`batchDelete results: ${successCount} successful, ${errorCount} failed out of ${ids.length} requests`);
+			
+			return result;
+		} catch (error) {
+			console.error('batchDelete error:', error);
+			throw error;
+		}
 	};
 
 	const getChangesStartToken = async () => {
@@ -899,7 +926,10 @@ export const getSyncMessage = (
 	max: number,
 	completed: number,
 	total: number
-) => `Syncing (${Math.floor(min + (max - min) * (completed / total))}%)`;
+) => {
+	const percentage = Math.floor(min + (max - min) * (completed / total));
+	return `Syncing ${percentage}% (${completed}/${total})`;
+};
 
 export const fileNameFromPath = (path: string) => path.split("/").slice(-1)[0];
 

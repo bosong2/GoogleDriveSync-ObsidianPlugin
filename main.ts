@@ -445,7 +445,7 @@ class SettingsTab extends PluginSettingTab {
 		// Operations 상태 표시 추가
 		new Setting(containerEl)
 			.setName("Sync Queue Status")
-			.setDesc(`Currently tracking ${Object.keys(this.plugin.settings.operations).length} file operations. Use 'Push' to sync them to Google Drive.`)
+			.setDesc("Files in the operation queue will be synchronized to Google Drive when you execute 'Push'.")
 			.addButton((button) => {
 				button
 					.setButtonText("View Queue")
