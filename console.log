@@ -1,0 +1,497 @@
+app.js:1 Obsidian Developer Console
+plugin:dataview:20478 Dataview: version 0.5.68 (requires obsidian 0.13.11)
+plugin:obsidian-meta-bind-plugin:184 meta-bind | Main >> loading
+plugin:obsidian-meta-bind-plugin:184 meta-bind | Main >> loading settings
+plugin:obsidian-meta-bind-plugin:184 meta-bind | Main >> load-time: 55.906982421875 ms
+plugin:quickadd:64 QuickAdd: (LOG) No migrations to run.
+plugin:media-extended:135 preload patch loaded
+plugin:media-extended:135 mx-player-hack loaded
+plugin:media-extended:127 preview click patched
+plugin:obsidian-excalidraw-plugin:8 Initialized Excalidraw Image Cache
+plugin:dataview:13006 Dataview: all 51 files have been indexed in 0.029s (51 cached, 0 skipped).
+plugin:media-extended:127 editor click patched
+plugin:obsidian-excalidraw-plugin:8 [Violation] Avoid using document.write(). https://developers.google.com/web/updates/2016/08/removing-document-write
+harvestStyles @ plugin:obsidian-excalidraw-plugin:8
+eval @ plugin:obsidian-excalidraw-plugin:8
+plugin:obsidian-meta-bind-plugin:184 meta-bind | Main >> loading settings
+plugin:google-drive-sync-peng:7 Starting vault scan using Obsidian API...
+plugin:google-drive-sync-peng:7 Folder added via API: /
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians
+plugin:google-drive-sync-peng:7 Folder added via API: 1.Fleet_Notes
+plugin:google-drive-sync-peng:7 Folder added via API: 2.TBD_Box
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study
+plugin:google-drive-sync-peng:7 Folder added via API: 4.Projects
+plugin:google-drive-sync-peng:7 Folder added via API: 5.Others
+plugin:google-drive-sync-peng:7 Folder added via API: Books
+plugin:google-drive-sync-peng:7 Folder added via API: Clippings
+plugin:google-drive-sync-peng:7 File added via API: claude_desktop_config.json
+plugin:google-drive-sync-peng:7 File added via API: 무제.md
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians/Library
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians/Media
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians/Template
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/AI 툴활용
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Claude
+plugin:google-drive-sync-peng:7 File added via API: 1.Fleet_Notes/Obsidian web service.md
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Gemini
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/N8N 학습
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Security Solutions
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Security Tools
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Securiy Etc
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/업무도구
+plugin:google-drive-sync-peng:7 Folder added via API: 2.TBD_Box/HashCorp Vault 설치
+plugin:google-drive-sync-peng:7 Folder added via API: 4.Projects/P1.일정자동등록
+plugin:google-drive-sync-peng:7 Folder added via API: 4.Projects/P2.카카오톡나에게메세지자동처리
+plugin:google-drive-sync-peng:7 Folder added via API: 4.Projects/S1.Obsidian Google Sync
+plugin:google-drive-sync-peng:7 Folder added via API: 4.Projects/S1.n8n 구성
+plugin:google-drive-sync-peng:7 Folder added via API: 5.Others/BMT
+plugin:google-drive-sync-peng:7 File added via API: Clippings/AI Models.md
+plugin:google-drive-sync-peng:7 File added via API: Clippings/Kakaotalk API.md
+plugin:google-drive-sync-peng:7 File added via API: Clippings/MLX-LM Examples.md
+plugin:google-drive-sync-peng:7 File added via API: Clippings/mlx-community (MLX Community).md
+plugin:google-drive-sync-peng:7 File added via API: Clippings/무료 SBOM Tools.md
+plugin:google-drive-sync-peng:7 File added via API: Clippings/임시노트(fleeting notes) 그룹화하기.md
+plugin:google-drive-sync-peng:7 File added via API: Clippings/이제부터 프로젝트를 하나 시작할꺼야. 관련해서 Agent를 설정해줘.   Agent0. ....md
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Template/Youtube Note Template.md
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/0. Media Index.md
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians/Media/Documents
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians/Media/Excalidraw
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians/Media/Images
+plugin:google-drive-sync-peng:7 Folder added via API: 0. Obsidians/Media/YouTube Note
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Claude/Claude Code
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Claude/MCP
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Claude/Opt-out Policy.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/AI 툴활용/Claude ChatGPT MCP 연동.md
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Gemini/Gemini CLI
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Gemini/Gemini 활용 학습.canvas
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Gemini/Gems
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Gemini/MCP
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Security Solutions/DB Access Control
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/N8N 학습/0_simple_rag.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/N8N 학습/무제.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Security Tools/ASN.md
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/Securiy Etc/Secret Management
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/업무도구/Obsidian
+plugin:google-drive-sync-peng:7 File added via API: 2.TBD_Box/HashCorp Vault 설치/HashiCorp Vault Server 설치.md
+plugin:google-drive-sync-peng:7 File added via API: 2.TBD_Box/HashCorp Vault 설치/N8N 키관리.md
+plugin:google-drive-sync-peng:7 Folder added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/P2.카카오톡나에게메세지자동처리/P2.ProcessFlow.md
+plugin:google-drive-sync-peng:7 File added via API: 5.Others/BMT/AHP(Eabonlee) Bug Reports.md
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Documents/DBSAFER5.0_사용자매뉴얼.pdf
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Documents/DBSAFER5.0_운영매뉴얼.pdf
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Documents/Enterprise Manager Manual.pdf
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Excalidraw/Drawing 2025-07-01 17.22.43.excalidraw.md
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.22.excalidraw.md
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.41.excalidraw.md
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Images/Pasted image 20250703095348.png
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/Images/Pasted image 20250902103654.png
+plugin:google-drive-sync-peng:7 File added via API: 0. Obsidians/Media/YouTube Note/0. Youtube Database.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Claude/Claude Code/Claude Code 환경 구축.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Claude/MCP/GPT5xClaude MCP.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Claude/MCP/민정길님아이디어(MCP)-202507.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Gemini/Gems/GPT PARK의 AI팩트 강좌.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Security Solutions/DB Access Control/0. DB접근제어 평가기준.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Security Solutions/DB Access Control/0. 검토한 DB 접근제어 솔루션.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Security Solutions/DB Access Control/0. 데이터베이스(DB) 접근제어 솔루션.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Security Solutions/DB Access Control/1. DBSafer Manager Manual for 5.0.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Security Solutions/DB Access Control/1. DBSafer 운영-사용자 매뉴얼.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/Securiy Etc/Secret Management/2025-09-03.API키 보안.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/업무도구/Obsidian/0.Summary.canvas
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/업무도구/Obsidian/Obsidian 유튜브 영상 자동 노트.md
+plugin:google-drive-sync-peng:7 Folder added via API: 3.Study/업무도구/Obsidian/Plugins
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. prj-master.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. project.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/CORS_Implementation_Report.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/PROJECT_COMPLETION_REPORT.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/cors-improvement-report.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1_done.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2_done.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3_done.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4_done.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-master.md
+plugin:google-drive-sync-peng:7 File added via API: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/project.md
+plugin:google-drive-sync-peng:7 File added via API: 3.Study/업무도구/Obsidian/Plugins/QuickAdd.md
+plugin:google-drive-sync-peng:7 API scan complete: 59 files, 40 folders
+plugin:google-drive-sync-peng:7 Also running adapter-based scan for comparison...
+plugin:google-drive-sync-peng:7 Scanning folder '': {files: Array(3), folders: Array(9)}files: (3) ['.DS_Store', 'claude_desktop_config.json', '무제.md']0: ".DS_Store"1: "claude_desktop_config.json"2: "무제.md"length: 3[[Prototype]]: Array(0)folders: (9) ['.obsidian', '0. Obsidians', '1.Fleet_Notes', '2.TBD_Box', '3.Study', '4.Projects', '5.Others', 'Books', 'Clippings']0: ".obsidian"1: "0. Obsidians"2: "1.Fleet_Notes"3: "2.TBD_Box"4: "3.Study"5: "4.Projects"6: "5.Others"7: "Books"8: "Clippings"length: 9[[Prototype]]: Array(0)at: ƒ at()concat: ƒ concat()constructor: ƒ Array()contains: ƒ includes()copyWithin: ƒ copyWithin()entries: ƒ entries()every: ƒ every()fill: ƒ fill()filter: ƒ filter()find: ƒ find()findIndex: ƒ findIndex()findLast: ƒ findLast()findLastIndex: ƒ findLastIndex()first: ƒ ()flat: ƒ flat()flatMap: ƒ flatMap()forEach: ƒ forEach()includes: ƒ includes()indexOf: ƒ indexOf()join: ƒ join()keys: ƒ keys()last: ƒ ()lastIndexOf: ƒ lastIndexOf()length: 0map: ƒ map()pop: ƒ pop()push: ƒ push()reduce: ƒ reduce()reduceRight: ƒ reduceRight()remove: ƒ (t)reverse: ƒ reverse()shift: ƒ shift()shuffle: ƒ ()slice: ƒ slice()some: ƒ some()sort: ƒ sort()splice: ƒ splice()toLocaleString: ƒ toLocaleString()toReversed: ƒ toReversed()toSorted: ƒ toSorted()toSpliced: ƒ toSpliced()toString: ƒ toString()unique: ƒ ()unshift: ƒ unshift()values: ƒ values()with: ƒ with()Symbol(Symbol.iterator): ƒ values()Symbol(Symbol.unscopables): {at: true, copyWithin: true, entries: true, fill: true, find: true, …}[[Prototype]]: Object[[Prototype]]: Objectconstructor: ƒ Object()hasOwnProperty: ƒ hasOwnProperty()isPrototypeOf: ƒ isPrototypeOf()propertyIsEnumerable: ƒ propertyIsEnumerable()toLocaleString: ƒ toLocaleString()toString: ƒ toString()valueOf: ƒ valueOf()__defineGetter__: ƒ __defineGetter__()__defineSetter__: ƒ __defineSetter__()__lookupGetter__: ƒ __lookupGetter__()__lookupSetter__: ƒ __lookupSetter__()__proto__: (...)get __proto__: ƒ __proto__()set __proto__: ƒ __proto__()
+plugin:google-drive-sync-peng:7 File '.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 File 'claude_desktop_config.json': INCLUDED
+plugin:google-drive-sync-peng:7 File '무제.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '.obsidian': {files: Array(8), folders: Array(1)}files: (8) ['.obsidian/app.json', '.obsidian/appearance.json', '.obsidian/community-plugins.json', '.obsidian/core-plugins.json', '.obsidian/graph.json', '.obsidian/templates.json', '.obsidian/types.json', '.obsidian/workspace.json']folders: ['.obsidian/plugins'][[Prototype]]: Object
+plugin:google-drive-sync-peng:7 File '.obsidian/app.json': EXCLUDED
+plugin:google-drive-sync-peng:7 File '.obsidian/appearance.json': EXCLUDED
+plugin:google-drive-sync-peng:7 File '.obsidian/community-plugins.json': EXCLUDED
+plugin:google-drive-sync-peng:7 File '.obsidian/core-plugins.json': EXCLUDED
+plugin:google-drive-sync-peng:7 File '.obsidian/graph.json': EXCLUDED
+plugin:google-drive-sync-peng:7 File '.obsidian/templates.json': EXCLUDED
+plugin:google-drive-sync-peng:7 File '.obsidian/types.json': EXCLUDED
+plugin:google-drive-sync-peng:7 File '.obsidian/workspace.json': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians': {files: Array(1), folders: Array(3)}files: ['0. Obsidians/.DS_Store']folders: (3) ['0. Obsidians/Library', '0. Obsidians/Media', '0. Obsidians/Template'][[Prototype]]: Object
+plugin:google-drive-sync-peng:7 File '0. Obsidians/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians/Library': {files: Array(0), folders: Array(0)}files: []folders: [][[Prototype]]: Object
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians/Media': {files: Array(2), folders: Array(4)}
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/0. Media Index.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians/Media/Documents': {files: Array(3), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Documents/DBSAFER5.0_사용자매뉴얼.pdf': INCLUDED
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Documents/DBSAFER5.0_운영매뉴얼.pdf': INCLUDED
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Documents/Enterprise Manager Manual.pdf': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians/Media/Excalidraw': {files: Array(3), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Excalidraw/Drawing 2025-07-01 17.22.43.excalidraw.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.22.excalidraw.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.41.excalidraw.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians/Media/Images': {files: Array(2), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Images/Pasted image 20250703095348.png': INCLUDED
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/Images/Pasted image 20250902103654.png': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians/Media/YouTube Note': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Media/YouTube Note/0. Youtube Database.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '0. Obsidians/Template': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '0. Obsidians/Template/Youtube Note Template.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '1.Fleet_Notes': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '1.Fleet_Notes/Obsidian web service.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '2.TBD_Box': {files: Array(1), folders: Array(1)}
+plugin:google-drive-sync-peng:7 File '2.TBD_Box/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '2.TBD_Box/HashCorp Vault 설치': {files: Array(2), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '2.TBD_Box/HashCorp Vault 설치/HashiCorp Vault Server 설치.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '2.TBD_Box/HashCorp Vault 설치/N8N 키관리.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study': {files: Array(1), folders: Array(8)}
+plugin:google-drive-sync-peng:7 File '3.Study/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/AI 툴활용': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/AI 툴활용/Claude ChatGPT MCP 연동.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Claude': {files: Array(2), folders: Array(2)}
+plugin:google-drive-sync-peng:7 File '3.Study/Claude/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/Claude/Opt-out Policy.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Claude/Claude Code': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/Claude/Claude Code/Claude Code 환경 구축.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Claude/MCP': {files: Array(2), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/Claude/MCP/GPT5xClaude MCP.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/Claude/MCP/민정길님아이디어(MCP)-202507.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Gemini': {files: Array(2), folders: Array(3)}
+plugin:google-drive-sync-peng:7 File '3.Study/Gemini/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/Gemini/Gemini 활용 학습.canvas': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Gemini/Gemini CLI': {files: Array(0), folders: Array(0)}
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Gemini/Gems': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/Gemini/Gems/GPT PARK의 AI팩트 강좌.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Gemini/MCP': {files: Array(0), folders: Array(0)}
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/N8N 학습': {files: Array(2), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/N8N 학습/0_simple_rag.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/N8N 학습/무제.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Security Solutions': {files: Array(1), folders: Array(1)}
+plugin:google-drive-sync-peng:7 File '3.Study/Security Solutions/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Security Solutions/DB Access Control': {files: Array(5), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/Security Solutions/DB Access Control/0. DB접근제어 평가기준.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/Security Solutions/DB Access Control/0. 검토한 DB 접근제어 솔루션.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/Security Solutions/DB Access Control/0. 데이터베이스(DB) 접근제어 솔루션.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/Security Solutions/DB Access Control/1. DBSafer Manager Manual for 5.0.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/Security Solutions/DB Access Control/1. DBSafer 운영-사용자 매뉴얼.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Security Tools': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/Security Tools/ASN.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Securiy Etc': {files: Array(1), folders: Array(1)}
+plugin:google-drive-sync-peng:7 File '3.Study/Securiy Etc/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/Securiy Etc/Secret Management': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/Securiy Etc/Secret Management/2025-09-03.API키 보안.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/업무도구': {files: Array(1), folders: Array(1)}
+plugin:google-drive-sync-peng:7 File '3.Study/업무도구/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/업무도구/Obsidian': {files: Array(2), folders: Array(1)}
+plugin:google-drive-sync-peng:7 File '3.Study/업무도구/Obsidian/0.Summary.canvas': INCLUDED
+plugin:google-drive-sync-peng:7 File '3.Study/업무도구/Obsidian/Obsidian 유튜브 영상 자동 노트.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '3.Study/업무도구/Obsidian/Plugins': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '3.Study/업무도구/Obsidian/Plugins/QuickAdd.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '4.Projects': {files: Array(1), folders: Array(4)}
+plugin:google-drive-sync-peng:7 File '4.Projects/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '4.Projects/P1.일정자동등록': {files: Array(0), folders: Array(0)}
+plugin:google-drive-sync-peng:7 Scanning folder '4.Projects/P2.카카오톡나에게메세지자동처리': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '4.Projects/P2.카카오톡나에게메세지자동처리/P2.ProcessFlow.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '4.Projects/S1.Obsidian Google Sync': {files: Array(1), folders: Array(1)}
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '4.Projects/S1.Obsidian Google Sync/OGD Web Server': {files: Array(15), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. prj-master.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. project.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/CORS_Implementation_Report.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/PROJECT_COMPLETION_REPORT.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/cors-improvement-report.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1_done.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2_done.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3_done.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4_done.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-master.md': INCLUDED
+plugin:google-drive-sync-peng:7 File '4.Projects/S1.Obsidian Google Sync/OGD Web Server/project.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '4.Projects/S1.n8n 구성': {files: Array(0), folders: Array(0)}
+plugin:google-drive-sync-peng:7 Scanning folder '5.Others': {files: Array(1), folders: Array(1)}
+plugin:google-drive-sync-peng:7 File '5.Others/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder '5.Others/BMT': {files: Array(1), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File '5.Others/BMT/AHP(Eabonlee) Bug Reports.md': INCLUDED
+plugin:google-drive-sync-peng:7 Scanning folder 'Books': {files: Array(0), folders: Array(0)}
+plugin:google-drive-sync-peng:7 Scanning folder 'Clippings': {files: Array(8), folders: Array(0)}
+plugin:google-drive-sync-peng:7 File 'Clippings/.DS_Store': EXCLUDED
+plugin:google-drive-sync-peng:7 File 'Clippings/AI Models.md': INCLUDED
+plugin:google-drive-sync-peng:7 File 'Clippings/Kakaotalk API.md': INCLUDED
+plugin:google-drive-sync-peng:7 File 'Clippings/MLX-LM Examples.md': INCLUDED
+plugin:google-drive-sync-peng:7 File 'Clippings/mlx-community (MLX Community).md': INCLUDED
+plugin:google-drive-sync-peng:7 File 'Clippings/무료 SBOM Tools.md': INCLUDED
+plugin:google-drive-sync-peng:7 File 'Clippings/이제부터 프로젝트를 하나 시작할꺼야. 관련해서 Agent를 설정해줘.   Agent0. ....md': INCLUDED
+plugin:google-drive-sync-peng:7 File 'Clippings/임시노트(fleeting notes) 그룹화하기.md': INCLUDED
+plugin:google-drive-sync-peng:7 Final scan results: {totalFiles: 118, totalFolders: 80, sampleFiles: Array(5), sampleFolders: Array(5)}
+plugin:google-drive-sync-peng:7 Initial sync scan results: {filesFound: 118, foldersFound: 80, files: Array(10), folders: Array(10)}files: Array(10)0: "claude_desktop_config.json"1: "무제.md"2: "1.Fleet_Notes/Obsidian web service.md"3: "Clippings/AI Models.md"4: "Clippings/Kakaotalk API.md"5: "Clippings/MLX-LM Examples.md"6: "Clippings/mlx-community (MLX Community).md"7: "Clippings/무료 SBOM Tools.md"8: "Clippings/임시노트(fleeting notes) 그룹화하기.md"9: "Clippings/이제부터 프로젝트를 하나 시작할꺼야. 관련해서 Agent를 설정해줘.   Agent0. ....md"length: 10[[Prototype]]: Array(0)filesFound: 118folders: (10) ['/', '0. Obsidians', '1.Fleet_Notes', '2.TBD_Box', '3.Study', '4.Projects', '5.Others', 'Books', 'Clippings', '0. Obsidians/Library']0: "/"1: "0. Obsidians"2: "1.Fleet_Notes"3: "2.TBD_Box"4: "3.Study"5: "4.Projects"6: "5.Others"7: "Books"8: "Clippings"9: "0. Obsidians/Library"length: 10[[Prototype]]: Array(0)foldersFound: 80[[Prototype]]: Object
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Vault root folder not found, creating new one...
+plugin:google-drive-sync-peng:6 Created vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:7 Adding 118 files to operations queue...
+plugin:google-drive-sync-peng:7 Added to operations: claude_desktop_config.json
+plugin:google-drive-sync-peng:7 Added to operations: 무제.md
+plugin:google-drive-sync-peng:7 Added to operations: 1.Fleet_Notes/Obsidian web service.md
+plugin:google-drive-sync-peng:7 Added to operations: Clippings/AI Models.md
+plugin:google-drive-sync-peng:7 Added to operations: Clippings/Kakaotalk API.md
+plugin:google-drive-sync-peng:7 Added to operations: Clippings/MLX-LM Examples.md
+plugin:google-drive-sync-peng:7 Added to operations: Clippings/mlx-community (MLX Community).md
+plugin:google-drive-sync-peng:7 Added to operations: Clippings/무료 SBOM Tools.md
+plugin:google-drive-sync-peng:7 Added to operations: Clippings/임시노트(fleeting notes) 그룹화하기.md
+plugin:google-drive-sync-peng:7 Added to operations: Clippings/이제부터 프로젝트를 하나 시작할꺼야. 관련해서 Agent를 설정해줘.   Agent0. ....md
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Template/Youtube Note Template.md
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/0. Media Index.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Claude/Opt-out Policy.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/AI 툴활용/Claude ChatGPT MCP 연동.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Gemini/Gemini 활용 학습.canvas
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/N8N 학습/0_simple_rag.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/N8N 학습/무제.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Security Tools/ASN.md
+plugin:google-drive-sync-peng:7 Added to operations: 2.TBD_Box/HashCorp Vault 설치/HashiCorp Vault Server 설치.md
+plugin:google-drive-sync-peng:7 Added to operations: 2.TBD_Box/HashCorp Vault 설치/N8N 키관리.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/P2.카카오톡나에게메세지자동처리/P2.ProcessFlow.md
+plugin:google-drive-sync-peng:7 Added to operations: 5.Others/BMT/AHP(Eabonlee) Bug Reports.md
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Documents/DBSAFER5.0_사용자매뉴얼.pdf
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Documents/DBSAFER5.0_운영매뉴얼.pdf
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Documents/Enterprise Manager Manual.pdf
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Excalidraw/Drawing 2025-07-01 17.22.43.excalidraw.md
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.22.excalidraw.md
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.41.excalidraw.md
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Images/Pasted image 20250703095348.png
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/Images/Pasted image 20250902103654.png
+plugin:google-drive-sync-peng:7 Added to operations: 0. Obsidians/Media/YouTube Note/0. Youtube Database.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Claude/Claude Code/Claude Code 환경 구축.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Claude/MCP/GPT5xClaude MCP.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Claude/MCP/민정길님아이디어(MCP)-202507.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Gemini/Gems/GPT PARK의 AI팩트 강좌.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Security Solutions/DB Access Control/0. DB접근제어 평가기준.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Security Solutions/DB Access Control/0. 검토한 DB 접근제어 솔루션.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Security Solutions/DB Access Control/0. 데이터베이스(DB) 접근제어 솔루션.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Security Solutions/DB Access Control/1. DBSafer Manager Manual for 5.0.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Security Solutions/DB Access Control/1. DBSafer 운영-사용자 매뉴얼.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/Securiy Etc/Secret Management/2025-09-03.API키 보안.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/업무도구/Obsidian/0.Summary.canvas
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/업무도구/Obsidian/Obsidian 유튜브 영상 자동 노트.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. prj-master.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. project.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/CORS_Implementation_Report.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/PROJECT_COMPLETION_REPORT.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/cors-improvement-report.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1_done.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2_done.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3_done.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4_done.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-master.md
+plugin:google-drive-sync-peng:7 Added to operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/project.md
+plugin:google-drive-sync-peng:7 Added to operations: 3.Study/업무도구/Obsidian/Plugins/QuickAdd.md
+plugin:google-drive-sync-peng:7 Already in operations: claude_desktop_config.json (create)
+plugin:google-drive-sync-peng:7 Already in operations: 무제.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/0. Media Index.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Documents/DBSAFER5.0_사용자매뉴얼.pdf (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Documents/DBSAFER5.0_운영매뉴얼.pdf (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Documents/Enterprise Manager Manual.pdf (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Excalidraw/Drawing 2025-07-01 17.22.43.excalidraw.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.22.excalidraw.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.41.excalidraw.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Images/Pasted image 20250703095348.png (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/Images/Pasted image 20250902103654.png (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Media/YouTube Note/0. Youtube Database.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 0. Obsidians/Template/Youtube Note Template.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 1.Fleet_Notes/Obsidian web service.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 2.TBD_Box/HashCorp Vault 설치/HashiCorp Vault Server 설치.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 2.TBD_Box/HashCorp Vault 설치/N8N 키관리.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/AI 툴활용/Claude ChatGPT MCP 연동.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Claude/Opt-out Policy.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Claude/Claude Code/Claude Code 환경 구축.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Claude/MCP/GPT5xClaude MCP.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Claude/MCP/민정길님아이디어(MCP)-202507.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Gemini/Gemini 활용 학습.canvas (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Gemini/Gems/GPT PARK의 AI팩트 강좌.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/N8N 학습/0_simple_rag.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/N8N 학습/무제.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Security Solutions/DB Access Control/0. DB접근제어 평가기준.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Security Solutions/DB Access Control/0. 검토한 DB 접근제어 솔루션.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Security Solutions/DB Access Control/0. 데이터베이스(DB) 접근제어 솔루션.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Security Solutions/DB Access Control/1. DBSafer Manager Manual for 5.0.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Security Solutions/DB Access Control/1. DBSafer 운영-사용자 매뉴얼.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Security Tools/ASN.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/Securiy Etc/Secret Management/2025-09-03.API키 보안.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/업무도구/Obsidian/0.Summary.canvas (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/업무도구/Obsidian/Obsidian 유튜브 영상 자동 노트.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 3.Study/업무도구/Obsidian/Plugins/QuickAdd.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/P2.카카오톡나에게메세지자동처리/P2.ProcessFlow.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. prj-master.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. project.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/CORS_Implementation_Report.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/PROJECT_COMPLETION_REPORT.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/cors-improvement-report.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1_done.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2_done.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3_done.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4_done.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-master.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/project.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: 5.Others/BMT/AHP(Eabonlee) Bug Reports.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: Clippings/AI Models.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: Clippings/Kakaotalk API.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: Clippings/MLX-LM Examples.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: Clippings/mlx-community (MLX Community).md (create)
+plugin:google-drive-sync-peng:7 Already in operations: Clippings/무료 SBOM Tools.md (create)
+plugin:google-drive-sync-peng:7 Already in operations: Clippings/이제부터 프로젝트를 하나 시작할꺼야. 관련해서 Agent를 설정해줘.   Agent0. ....md (create)
+plugin:google-drive-sync-peng:7 Already in operations: Clippings/임시노트(fleeting notes) 그룹화하기.md (create)
+plugin:google-drive-sync-peng:7 Operations added: 59 new files
+plugin:google-drive-sync-peng:6 Getting vault root folder ID...
+plugin:google-drive-sync-peng:6 Found existing vault root folder: 1VBPw_0oLNmFR-01msgZ50vnVhxCXT8m2
+plugin:google-drive-sync-peng:16 Uploading file: claude_desktop_config.json {hasParent: true, parentPath: '/', parentId: '1rOLwHbuVNjgRKJFO3UFo0LWQLsfx2SC1', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 무제.md {hasParent: true, parentPath: '/', parentId: '1rOLwHbuVNjgRKJFO3UFo0LWQLsfx2SC1', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 1.Fleet_Notes/Obsidian web service.md {hasParent: true, parentPath: '1.Fleet_Notes', parentId: '1bsKKc59cBcjW__go69t-xoWf0pdtsHNK', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: Clippings/AI Models.md {hasParent: true, parentPath: 'Clippings', parentId: '14nGv0Gx9FoB5wriuxDRAi-Y4PttMVrbx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: Clippings/Kakaotalk API.md {hasParent: true, parentPath: 'Clippings', parentId: '14nGv0Gx9FoB5wriuxDRAi-Y4PttMVrbx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: Clippings/MLX-LM Examples.md {hasParent: true, parentPath: 'Clippings', parentId: '14nGv0Gx9FoB5wriuxDRAi-Y4PttMVrbx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: Clippings/mlx-community (MLX Community).md {hasParent: true, parentPath: 'Clippings', parentId: '14nGv0Gx9FoB5wriuxDRAi-Y4PttMVrbx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: Clippings/무료 SBOM Tools.md {hasParent: true, parentPath: 'Clippings', parentId: '14nGv0Gx9FoB5wriuxDRAi-Y4PttMVrbx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: Clippings/임시노트(fleeting notes) 그룹화하기.md {hasParent: true, parentPath: 'Clippings', parentId: '14nGv0Gx9FoB5wriuxDRAi-Y4PttMVrbx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: Clippings/이제부터 프로젝트를 하나 시작할꺼야. 관련해서 Agent를 설정해줘.   Agent0. ....md {hasParent: true, parentPath: 'Clippings', parentId: '14nGv0Gx9FoB5wriuxDRAi-Y4PttMVrbx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Template/Youtube Note Template.md {hasParent: true, parentPath: '0. Obsidians/Template', parentId: '1bGv7WYjwFtzY9MpjqnTpAiLxy_rXBJQZ', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/0. Media Index.md {hasParent: true, parentPath: '0. Obsidians/Media', parentId: '1x-w4ex2rvfj3zrxJ6BBpo8Bj89a07BJ9', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Claude/Opt-out Policy.md {hasParent: true, parentPath: '3.Study/Claude', parentId: '1WoaBgQJGbn1pISFbrVXuMV2TNp-53MOW', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/AI 툴활용/Claude ChatGPT MCP 연동.md {hasParent: true, parentPath: '3.Study/AI 툴활용', parentId: '1RQHKu2SBCeW00VHRORP78sIEHLCmZ-Gv', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Gemini/Gemini 활용 학습.canvas {hasParent: true, parentPath: '3.Study/Gemini', parentId: '1NzfWhu9UFuHFvMzskzgwphJzKvsIJ-2m', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/N8N 학습/0_simple_rag.md {hasParent: true, parentPath: '3.Study/N8N 학습', parentId: '1rNI_uK2llE_Mymij3xg-lWZoibZRZAVx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/N8N 학습/무제.md {hasParent: true, parentPath: '3.Study/N8N 학습', parentId: '1rNI_uK2llE_Mymij3xg-lWZoibZRZAVx', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Security Tools/ASN.md {hasParent: true, parentPath: '3.Study/Security Tools', parentId: '1Wy2BwxHTIgfyv8MZcaAlHAz8RTBaMEO9', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 2.TBD_Box/HashCorp Vault 설치/HashiCorp Vault Server 설치.md {hasParent: true, parentPath: '2.TBD_Box/HashCorp Vault 설치', parentId: '1XUulcgEP6THlP6hqXL8GWF43tZWBs_lg', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 2.TBD_Box/HashCorp Vault 설치/N8N 키관리.md {hasParent: true, parentPath: '2.TBD_Box/HashCorp Vault 설치', parentId: '1XUulcgEP6THlP6hqXL8GWF43tZWBs_lg', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/P2.카카오톡나에게메세지자동처리/P2.ProcessFlow.md {hasParent: true, parentPath: '4.Projects/P2.카카오톡나에게메세지자동처리', parentId: '1jIvQdVrEbiQdkUQklQd94luGKt_yJ8GB', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 5.Others/BMT/AHP(Eabonlee) Bug Reports.md {hasParent: true, parentPath: '5.Others/BMT', parentId: '1W7lmIM5ddAs7EHtE1I6A1s1iCZjKPeGk', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Documents/DBSAFER5.0_사용자매뉴얼.pdf {hasParent: true, parentPath: '0. Obsidians/Media/Documents', parentId: '12291LvWLfjusSIjIJ00FbvWoo1G26hsw', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Documents/DBSAFER5.0_운영매뉴얼.pdf {hasParent: true, parentPath: '0. Obsidians/Media/Documents', parentId: '12291LvWLfjusSIjIJ00FbvWoo1G26hsw', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Documents/Enterprise Manager Manual.pdf {hasParent: true, parentPath: '0. Obsidians/Media/Documents', parentId: '12291LvWLfjusSIjIJ00FbvWoo1G26hsw', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Excalidraw/Drawing 2025-07-01 17.22.43.excalidraw.md {hasParent: true, parentPath: '0. Obsidians/Media/Excalidraw', parentId: '1XwoPT6TZ75fRK39OEr8oQIpLiPJCXkcL', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.22.excalidraw.md {hasParent: true, parentPath: '0. Obsidians/Media/Excalidraw', parentId: '1XwoPT6TZ75fRK39OEr8oQIpLiPJCXkcL', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Excalidraw/Drawing 2025-08-12 16.25.41.excalidraw.md {hasParent: true, parentPath: '0. Obsidians/Media/Excalidraw', parentId: '1XwoPT6TZ75fRK39OEr8oQIpLiPJCXkcL', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Images/Pasted image 20250703095348.png {hasParent: true, parentPath: '0. Obsidians/Media/Images', parentId: '1EQgrGSnTt7bWRr37gAG5CZEpxeIMMwPC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/Images/Pasted image 20250902103654.png {hasParent: true, parentPath: '0. Obsidians/Media/Images', parentId: '1EQgrGSnTt7bWRr37gAG5CZEpxeIMMwPC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 0. Obsidians/Media/YouTube Note/0. Youtube Database.md {hasParent: true, parentPath: '0. Obsidians/Media/YouTube Note', parentId: '1K2KpoownOVyT_AnZiWCmLLxah1VmPKPS', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Claude/Claude Code/Claude Code 환경 구축.md {hasParent: true, parentPath: '3.Study/Claude/Claude Code', parentId: '1F0W0hsCoXb6C7MRwsyHBjDKDHHd91AFL', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Claude/MCP/GPT5xClaude MCP.md {hasParent: true, parentPath: '3.Study/Claude/MCP', parentId: '18VGlIgjSflXAldftJv9VIXl9v4meOJ__', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Claude/MCP/민정길님아이디어(MCP)-202507.md {hasParent: true, parentPath: '3.Study/Claude/MCP', parentId: '18VGlIgjSflXAldftJv9VIXl9v4meOJ__', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Gemini/Gems/GPT PARK의 AI팩트 강좌.md {hasParent: true, parentPath: '3.Study/Gemini/Gems', parentId: '1MRCsHgOhgm0UfCPX7Qxo9dFVEHRl1xge', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Security Solutions/DB Access Control/0. DB접근제어 평가기준.md {hasParent: true, parentPath: '3.Study/Security Solutions/DB Access Control', parentId: '1DuNt-ZKXKRkR60t4FZyjUu0mPGpPVhVg', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Security Solutions/DB Access Control/0. 검토한 DB 접근제어 솔루션.md {hasParent: true, parentPath: '3.Study/Security Solutions/DB Access Control', parentId: '1DuNt-ZKXKRkR60t4FZyjUu0mPGpPVhVg', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Security Solutions/DB Access Control/0. 데이터베이스(DB) 접근제어 솔루션.md {hasParent: true, parentPath: '3.Study/Security Solutions/DB Access Control', parentId: '1DuNt-ZKXKRkR60t4FZyjUu0mPGpPVhVg', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Security Solutions/DB Access Control/1. DBSafer Manager Manual for 5.0.md {hasParent: true, parentPath: '3.Study/Security Solutions/DB Access Control', parentId: '1DuNt-ZKXKRkR60t4FZyjUu0mPGpPVhVg', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Security Solutions/DB Access Control/1. DBSafer 운영-사용자 매뉴얼.md {hasParent: true, parentPath: '3.Study/Security Solutions/DB Access Control', parentId: '1DuNt-ZKXKRkR60t4FZyjUu0mPGpPVhVg', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/Securiy Etc/Secret Management/2025-09-03.API키 보안.md {hasParent: true, parentPath: '3.Study/Securiy Etc/Secret Management', parentId: '1w59o1x2kOndzHAh3RfhiZrCeJjHpj3bY', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/업무도구/Obsidian/0.Summary.canvas {hasParent: true, parentPath: '3.Study/업무도구/Obsidian', parentId: '1TMU6wr4mL8ysE_Wthnx7X3CMOg5A3kbC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/업무도구/Obsidian/Obsidian 유튜브 영상 자동 노트.md {hasParent: true, parentPath: '3.Study/업무도구/Obsidian', parentId: '1TMU6wr4mL8ysE_Wthnx7X3CMOg5A3kbC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. prj-master.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/0. project.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/CORS_Implementation_Report.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/PROJECT_COMPLETION_REPORT.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/cors-improvement-report.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-1_done.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-2_done.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-3_done.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-4_done.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/prj-master.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 4.Projects/S1.Obsidian Google Sync/OGD Web Server/project.md {hasParent: true, parentPath: '4.Projects/S1.Obsidian Google Sync/OGD Web Server', parentId: '1C4MNmq7rPpkTZQez4Dc2qkvtaxlE1gRC', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Uploading file: 3.Study/업무도구/Obsidian/Plugins/QuickAdd.md {hasParent: true, parentPath: '3.Study/업무도구/Obsidian/Plugins', parentId: '15ViyO5av_1XOuxIZsdZoKjKqZnVtNclq', pathsToIdsEntries: Array(3)}
+plugin:google-drive-sync-peng:16 Creating config folders in hierarchy order...
+plugin:google-drive-sync-peng:7 Syncing folders in hierarchy order: (10) ['.obsidian/plugins', '.obsidian/plugins/coder', '.obsidian/plugins/dataview', '.obsidian/plugins/google-drive-sync', '.obsidian/plugins/js-engine', '.obsidian/plugins/media-extended', '.obsidian/plugins/obsidian-excalidraw-plugin', '.obsidian/plugins/obsidian-meta-bind-plugin', '.obsidian/plugins/quickadd', '.obsidian/plugins/templater-obsidian']
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins -> 1DOrNvp0RGw1b48btEQ3Q8opBLYULam1J
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/coder -> 1E6EYuJo_xAMA0SStMgjFCe2Cggha7uYk
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/dataview -> 1zoBArbk8_6WFTATx3OKpIEgy2qGuH8En
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/google-drive-sync -> 11LBQErG5CxKkXd4j0Tp5av1Fs5XZYX-0
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/js-engine -> 16LK5jgpC0DhHyHYmzWQbpRY9Frc-Tqkh
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/media-extended -> 1EDLGAryKMKtn4XrpABA5kJ8boTEnfJtg
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/obsidian-excalidraw-plugin -> 1kateYeIoLfGRWgN6hBMJ4TwpU44wDspC
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/obsidian-meta-bind-plugin -> 1RKH6xyNrhiQXo1AcS-dATiV-oFMbkuXD
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/quickadd -> 1jWk61zipW2OFJ5iezqPKvx5gAJy_fimT
+plugin:google-drive-sync-peng:7 Created/found folder: .obsidian/plugins/templater-obsidian -> 1JyRSqvHLdgzHXq2cUGNlFahI0QxTR_Yy
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/app.json {parentPath: '.obsidian', parentId: '1m25EFGqSeP9nWluQjkrq2Cl_gctSBwP0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/appearance.json {parentPath: '.obsidian', parentId: '1m25EFGqSeP9nWluQjkrq2Cl_gctSBwP0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/community-plugins.json {parentPath: '.obsidian', parentId: '1m25EFGqSeP9nWluQjkrq2Cl_gctSBwP0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/core-plugins.json {parentPath: '.obsidian', parentId: '1m25EFGqSeP9nWluQjkrq2Cl_gctSBwP0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/templates.json {parentPath: '.obsidian', parentId: '1m25EFGqSeP9nWluQjkrq2Cl_gctSBwP0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/types.json {parentPath: '.obsidian', parentId: '1m25EFGqSeP9nWluQjkrq2Cl_gctSBwP0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/coder/main.js {parentPath: '.obsidian/plugins/coder', parentId: '1E6EYuJo_xAMA0SStMgjFCe2Cggha7uYk', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/coder/manifest.json {parentPath: '.obsidian/plugins/coder', parentId: '1E6EYuJo_xAMA0SStMgjFCe2Cggha7uYk', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/coder/styles.css {parentPath: '.obsidian/plugins/coder', parentId: '1E6EYuJo_xAMA0SStMgjFCe2Cggha7uYk', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/dataview/data.json {parentPath: '.obsidian/plugins/dataview', parentId: '1zoBArbk8_6WFTATx3OKpIEgy2qGuH8En', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/dataview/main.js {parentPath: '.obsidian/plugins/dataview', parentId: '1zoBArbk8_6WFTATx3OKpIEgy2qGuH8En', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/dataview/manifest.json {parentPath: '.obsidian/plugins/dataview', parentId: '1zoBArbk8_6WFTATx3OKpIEgy2qGuH8En', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/dataview/styles.css {parentPath: '.obsidian/plugins/dataview', parentId: '1zoBArbk8_6WFTATx3OKpIEgy2qGuH8En', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/google-drive-sync/data.json {parentPath: '.obsidian/plugins/google-drive-sync', parentId: '11LBQErG5CxKkXd4j0Tp5av1Fs5XZYX-0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/google-drive-sync/main.js {parentPath: '.obsidian/plugins/google-drive-sync', parentId: '11LBQErG5CxKkXd4j0Tp5av1Fs5XZYX-0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/google-drive-sync/manifest.json {parentPath: '.obsidian/plugins/google-drive-sync', parentId: '11LBQErG5CxKkXd4j0Tp5av1Fs5XZYX-0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/google-drive-sync/styles.css {parentPath: '.obsidian/plugins/google-drive-sync', parentId: '11LBQErG5CxKkXd4j0Tp5av1Fs5XZYX-0', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/js-engine/data.json {parentPath: '.obsidian/plugins/js-engine', parentId: '16LK5jgpC0DhHyHYmzWQbpRY9Frc-Tqkh', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/js-engine/main.js {parentPath: '.obsidian/plugins/js-engine', parentId: '16LK5jgpC0DhHyHYmzWQbpRY9Frc-Tqkh', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/js-engine/manifest.json {parentPath: '.obsidian/plugins/js-engine', parentId: '16LK5jgpC0DhHyHYmzWQbpRY9Frc-Tqkh', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/js-engine/styles.css {parentPath: '.obsidian/plugins/js-engine', parentId: '16LK5jgpC0DhHyHYmzWQbpRY9Frc-Tqkh', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/media-extended/data.json {parentPath: '.obsidian/plugins/media-extended', parentId: '1EDLGAryKMKtn4XrpABA5kJ8boTEnfJtg', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/media-extended/main.js {parentPath: '.obsidian/plugins/media-extended', parentId: '1EDLGAryKMKtn4XrpABA5kJ8boTEnfJtg', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/media-extended/manifest.json {parentPath: '.obsidian/plugins/media-extended', parentId: '1EDLGAryKMKtn4XrpABA5kJ8boTEnfJtg', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/media-extended/styles.css {parentPath: '.obsidian/plugins/media-extended', parentId: '1EDLGAryKMKtn4XrpABA5kJ8boTEnfJtg', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-excalidraw-plugin/data.json {parentPath: '.obsidian/plugins/obsidian-excalidraw-plugin', parentId: '1kateYeIoLfGRWgN6hBMJ4TwpU44wDspC', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-excalidraw-plugin/main.js {parentPath: '.obsidian/plugins/obsidian-excalidraw-plugin', parentId: '1kateYeIoLfGRWgN6hBMJ4TwpU44wDspC', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-excalidraw-plugin/manifest.json {parentPath: '.obsidian/plugins/obsidian-excalidraw-plugin', parentId: '1kateYeIoLfGRWgN6hBMJ4TwpU44wDspC', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-excalidraw-plugin/styles.css {parentPath: '.obsidian/plugins/obsidian-excalidraw-plugin', parentId: '1kateYeIoLfGRWgN6hBMJ4TwpU44wDspC', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-meta-bind-plugin/data.json {parentPath: '.obsidian/plugins/obsidian-meta-bind-plugin', parentId: '1RKH6xyNrhiQXo1AcS-dATiV-oFMbkuXD', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-meta-bind-plugin/main.js {parentPath: '.obsidian/plugins/obsidian-meta-bind-plugin', parentId: '1RKH6xyNrhiQXo1AcS-dATiV-oFMbkuXD', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-meta-bind-plugin/manifest.json {parentPath: '.obsidian/plugins/obsidian-meta-bind-plugin', parentId: '1RKH6xyNrhiQXo1AcS-dATiV-oFMbkuXD', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/obsidian-meta-bind-plugin/styles.css {parentPath: '.obsidian/plugins/obsidian-meta-bind-plugin', parentId: '1RKH6xyNrhiQXo1AcS-dATiV-oFMbkuXD', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/quickadd/data.json {parentPath: '.obsidian/plugins/quickadd', parentId: '1jWk61zipW2OFJ5iezqPKvx5gAJy_fimT', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/quickadd/main.js {parentPath: '.obsidian/plugins/quickadd', parentId: '1jWk61zipW2OFJ5iezqPKvx5gAJy_fimT', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/quickadd/manifest.json {parentPath: '.obsidian/plugins/quickadd', parentId: '1jWk61zipW2OFJ5iezqPKvx5gAJy_fimT', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/quickadd/styles.css {parentPath: '.obsidian/plugins/quickadd', parentId: '1jWk61zipW2OFJ5iezqPKvx5gAJy_fimT', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/templater-obsidian/data.json {parentPath: '.obsidian/plugins/templater-obsidian', parentId: '1JyRSqvHLdgzHXq2cUGNlFahI0QxTR_Yy', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/templater-obsidian/main.js {parentPath: '.obsidian/plugins/templater-obsidian', parentId: '1JyRSqvHLdgzHXq2cUGNlFahI0QxTR_Yy', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/templater-obsidian/manifest.json {parentPath: '.obsidian/plugins/templater-obsidian', parentId: '1JyRSqvHLdgzHXq2cUGNlFahI0QxTR_Yy', pathsToIdsHasParent: true}
+plugin:google-drive-sync-peng:16 Uploading config file: .obsidian/plugins/templater-obsidian/styles.css {parentPath: '.obsidian/plugins/templater-obsidian', parentId: '1JyRSqvHLdgzHXq2cUGNlFahI0QxTR_Yy', pathsToIdsHasParent: true}

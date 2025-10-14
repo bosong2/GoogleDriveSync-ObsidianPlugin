@@ -777,47 +777,120 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	};
 
 	// 초기 동기화 실행
-	const performInitialSync = async (options = { showProgress: true }) => {
+	// Google Drive의 모든 파일 상태를 가져오는 함수
+	const getAllDriveFiles = async () => {
 		try {
-			const { files, folders } = await getAllVaultFiles();
-			
-			console.log('Initial sync scan results:', {
-				filesFound: files.length,
-				foldersFound: folders.length,
-				files: files.slice(0, 10), // 처음 10개만 로깅
-				folders: folders.slice(0, 10)
+			const allFiles = await searchFiles({
+				include: ["id", "properties", "mimeType", "modifiedTime"],
+				matches: [] // 모든 파일 검색
 			});
 			
+			if (!allFiles) return [];
+			
+			// properties.path가 있는 파일들만 반환 (config 속성 없는 파일들)
+			return allFiles.filter(file => 
+				file.properties?.path && 
+				!file.properties.config
+			);
+		} catch (error) {
+			console.error('Failed to get all drive files:', error);
+			return [];
+		}
+	};
+
+	const performInitialSync = async (options = { showProgress: true }) => {
+		try {
+			console.log('Starting intelligent scan all files...');
+			
+			// 1. 로컬 파일 스캔
+			const { files, folders } = await getAllVaultFiles();
+			console.log(`Local scan: ${files.length} files, ${folders.length} folders`);
+			
 			if (files.length === 0 && folders.length === 0) {
-				console.warn('No files or folders found during initial sync scan');
 				return { success: true, message: 'No files to sync', filesAdded: 0, foldersCreated: 0 };
 			}
 
-			// 1. 폴더 순차 생성
+			// 2. Google Drive 현재 상태 확인
+			console.log('Checking Google Drive current state...');
+			const driveFiles = await getAllDriveFiles();
+			console.log(`Drive scan: ${driveFiles.length} files found`);
+			
+			// 3. data.json 상태 확인
+			const pathsToIds = Object.fromEntries(
+				Object.entries(t.settings.driveIdToPath).map(([id, path]) => [path, id])
+			);
+			console.log(`Data.json: ${Object.keys(pathsToIds).length} entries`);
+
+			// 4. 폴더 처리 (우선 처리)
 			let foldersCreated = 0;
 			let folderErrors: string[] = [];
+			const foldersToCreate: string[] = [];
 			
-			if (folders.length > 0) {
-				const folderResult = await createFoldersSequentially(folders);
+			folders.forEach(folderPath => {
+				const existsInData = pathsToIds[folderPath];
+				const existsOnDrive = driveFiles.find(f => f.properties.path === folderPath);
+				
+				if (!existsInData && !existsOnDrive) {
+					// 새 폴더 → CREATE 필요
+					foldersToCreate.push(folderPath);
+					console.log(`New folder to create: ${folderPath}`);
+				} else if (!existsInData && existsOnDrive) {
+					// data.json 누락 → data.json 업데이트만
+					pathsToIds[folderPath] = existsOnDrive.id;
+					t.settings.driveIdToPath[existsOnDrive.id] = folderPath;
+					console.log(`Restored to data.json: ${folderPath} -> ${existsOnDrive.id}`);
+				} else if (existsInData && !existsOnDrive) {
+					// Drive에서 삭제됨 → CREATE 필요
+					foldersToCreate.push(folderPath);
+					console.log(`Drive deleted, recreate: ${folderPath}`);
+				} else {
+					// 정상 상태
+					console.log(`Folder already synced: ${folderPath}`);
+				}
+			});
+			
+			if (foldersToCreate.length > 0) {
+				const folderResult = await createFoldersSequentially(foldersToCreate);
 				foldersCreated = folderResult.createdCount;
 				folderErrors = folderResult.errors;
 			}
 
-			// 2. 파일들을 operations에 추가
+			// 5. 파일 처리
 			let filesAdded = 0;
-			console.log(`Adding ${files.length} files to operations queue...`);
+			const filesToCreate: string[] = [];
+			
 			files.forEach(filePath => {
-				if (!t.settings.operations[filePath]) {
+				// operations queue에 이미 있으면 스킵
+				if (t.settings.operations[filePath]) {
+					console.log(`Already in operations: ${filePath} (${t.settings.operations[filePath]})`);
+					return;
+				}
+				
+				const existsInData = pathsToIds[filePath];
+				const existsOnDrive = driveFiles.find(f => f.properties.path === filePath);
+				
+				if (!existsInData && !existsOnDrive) {
+					// 새 파일 → CREATE
 					t.settings.operations[filePath] = "create";
 					filesAdded++;
-					console.log(`Added to operations: ${filePath}`);
+					console.log(`New file to create: ${filePath}`);
+				} else if (!existsInData && existsOnDrive) {
+					// data.json 누락 → data.json 업데이트만
+					pathsToIds[filePath] = existsOnDrive.id;
+					t.settings.driveIdToPath[existsOnDrive.id] = filePath;
+					console.log(`Restored to data.json: ${filePath} -> ${existsOnDrive.id}`);
+				} else if (existsInData && !existsOnDrive) {
+					// Drive에서 삭제됨 → CREATE
+					t.settings.operations[filePath] = "create";
+					filesAdded++;
+					console.log(`Drive deleted, recreate: ${filePath}`);
 				} else {
-					console.log(`Already in operations: ${filePath} (${t.settings.operations[filePath]})`);
+					// 정상 상태 (둘 다 존재)
+					console.log(`File already synced: ${filePath}`);
 				}
 			});
-			console.log(`Operations added: ${filesAdded} new files`);
 
-			// 설정 저장
+			// 6. 설정 저장
 			await t.saveSettings();
 
 			const allErrors = [...folderErrors];
@@ -829,16 +902,17 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 				foldersCreated,
 				errors: allErrors,
 				message: success 
-					? `Initial sync ready: ${filesAdded} files, ${foldersCreated} folders`
-					: `Partial sync: ${filesAdded} files, ${foldersCreated} folders (${allErrors.length} errors)`
+					? `Scan completed: ${filesAdded} files to sync, ${foldersCreated} folders created`
+					: `Scan completed with errors: ${filesAdded} files, ${foldersCreated} folders (${allErrors.length} errors)`
 			};
 		} catch (error) {
+			console.error('performInitialSync error:', error);
 			return {
 				success: false,
 				filesAdded: 0,
 				foldersCreated: 0,
 				errors: [error.message],
-				message: `Initial sync failed: ${error.message}`
+				message: `Scan failed: ${error.message}`
 			};
 		}
 	};
@@ -863,6 +937,7 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		deleteFilesMinimumOperations,
 		getConfigFilesToSync,
 		getAllVaultFiles,
+		getAllDriveFiles,
 		isFirstTimeSync,
 		createFoldersSequentially,
 		syncFoldersHierarchy,
