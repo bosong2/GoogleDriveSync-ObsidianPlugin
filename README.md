@@ -1,9 +1,10 @@
 # Obsidian Google Drive Sync Plugin
 
-이 플러그인은 Richard Xiong이 제작한 원본 [Google Drive Sync](https://github.com/RichardX366/Obsidian-Google-Drive) 플러그인을 기반으로, 사용자 정의 인증 서버를 지원하도록 수정된 버전입니다.
+Obsidian 볼트와 Google Drive 간의 양방향 동기화를 제공하는 개선된 플러그인입니다. 원본 프로젝트를 기반으로 다양한 기능과 안정성을 개선했습니다.
 
-**현재 버전:** V1.0.0
-**수정자:** Peng. (ORG:Richard Xiong)
+**GitHub Repository:** [https://github.com/bosong2/GoogleDriveSync-ObsidianPlugin](https://github.com/bosong2/GoogleDriveSync-ObsidianPlugin)  
+**버전:** 1.0.0  
+**개발자:** Peng
 
 ## Disclaimer
 
@@ -16,10 +17,22 @@
 
 ## 주요 기능
 
--   양방향 동기화 (Obsidian -> Google Drive, Google Drive -> Obsidian)
--   여러 기기 간 동기화 지원 (Windows, MacOS, iOS 테스트 완료)
--   로컬 파일 우선 동기화 (충돌 자동 해결)
--   **사용자 정의 인증 서버 지원**
+### 🔄 동기화 기능
+-   **양방향 동기화**: Obsidian ↔ Google Drive 완전 동기화
+-   **다중 기기 지원**: Windows, macOS, iOS에서 테스트 완료
+-   **로컬 우선 정책**: 충돌 시 로컬 변경사항 우선 보호
+-   **실시간 변경 추적**: 파일 생성, 수정, 삭제, 이동 자동 감지
+
+### 🚀 개선된 기능
+-   **지능형 파일 스캔**: 중복 업로드 방지 및 상태 비교 분석
+-   **고급 충돌 해결**: 자동 백업 생성 및 수동 해결 지원
+-   **에러 관리 시스템**: 실패한 동기화 추적 및 재시도 로직
+-   **사용자 정의 서버**: 개인 인증 서버 지원
+
+### 📱 사용성 개선
+-   **직관적인 UI**: 동기화 상태 및 진행률 표시
+-   **세밀한 제어**: 파일별 동기화 큐 관리
+-   **상세한 로깅**: 모든 동기화 과정 추적 가능
 
 ## 설치 및 설정 방법
 
@@ -45,17 +58,69 @@
 
 ## 사용법
 
--   **Pull (가져오기)**: Obsidian을 시작할 때 또는 명령어(`Google Drive: Pull from Google Drive`)를 통해 자동으로 Google Drive의 변경사항을 가져옵니다.
--   **Push (내보내기)**: 로컬 볼트의 변경사항을 Google Drive로 보내려면, 좌측 리본 메뉴의 동기화 아이콘을 클릭하거나 명령어(`Google Drive: Push to Google Drive`)를 실행합니다.
--   **Reset (초기화)**: 로컬 상태를 Google Drive의 상태로 강제로 덮어쓰려면 명령어(`Google Drive: Reset local vault to Google Drive`)를 실행합니다. **(주의: 로컬 변경사항이 사라질 수 있습니다.)**
+### 기본 동기화 작업
+
+-   **Pull (가져오기)**: Obsidian 시작 시 자동 실행 또는 명령어 `Google Drive: Pull from Google Drive`
+-   **Push (내보내기)**: 리본 아이콘 클릭 또는 명령어 `Google Drive: Push to Google Drive`
+-   **Reset (초기화)**: 명령어 `Google Drive: Reset local vault to Google Drive` ⚠️ **(주의: 로컬 변경사항 삭제)**
+
+### 초기 볼트 설정
+
+처음 설정하거나 기존 파일들을 동기화할 때:
+
+1. **파일 스캔**: 설정 → "Initial Vault Sync" → "Scan All Files" 클릭
+   - 로컬 파일과 Google Drive 상태를 지능적으로 분석
+   - 중복 파일 생성 방지
+   - 누락된 파일 매핑 복원
+2. **업로드**: 스캔 완료 후 "Push"를 실행하여 큐에 있는 파일들을 Google Drive에 업로드
+
+### 고급 기능
+
+-   **동기화 큐 확인**: 설정에서 대기 중인 동기화 작업 조회
+-   **에러 관리**: 실패한 동기화 작업 확인 및 해결
+-   **충돌 해결**: `.conflict.backup` 파일을 통한 수동 충돌 해결
 
 ## 주의사항
 
--   데이터 손실을 방지하기 위해, Google Drive에 생성된 플러그인 폴더에 수동으로 파일을 업로드하거나 다른 동기화 프로그램을 함께 사용하지 마십시오.
--   가급적 Obsidian 앱 내에서만 파일을 수정하십시오. 외부에서 파일을 변경하면 변경사항이 추적되지 않을 수 있습니다.
+-   **백업 필수**: 사용 전 반드시 볼트를 백업하세요
+-   **단독 사용**: Google Drive 폴더에 다른 동기화 프로그램이나 수동 파일 업로드 금지
+-   **앱 내 수정**: 가급적 Obsidian 앱 내에서만 파일을 수정하세요
+-   **네트워크 필요**: 동기화를 위한 안정적인 인터넷 연결 필요
 
-## 개발가이드
--  npm audit fix --force
--  npm fund
--  npm install
--  npm run build
+## 문제 해결
+
+### 일반적인 문제
+
+**"Please set up your refresh token first"**
+- 설정에서 유효한 Refresh Token을 입력하세요
+
+**"Server is not reachable"**
+- Server URL을 확인하고 인증 서버가 실행 중인지 확인하세요
+- 네트워크 연결을 확인하세요
+
+**동기화 충돌**
+- 볼트에서 `.conflict.backup` 파일을 확인하세요
+- 수동으로 충돌을 해결하고 백업 파일을 삭제하세요
+
+**파일이 동기화되지 않음**
+- "Scan All Files"를 사용하여 동기화 상태를 새로고침하세요
+- 설정에서 동기화 큐 상태를 확인하세요
+- 에러 로그에서 구체적인 문제를 확인하세요
+
+## 개발 가이드
+
+```bash
+npm install
+npm run build
+```
+
+## 시스템 요구사항
+
+- **Obsidian**: 1.6.0 이상
+- **플랫폼**: 데스크톱 (Windows, macOS, Linux), 모바일 (iOS, Android)
+- **네트워크**: 동기화를 위한 인터넷 연결
+- **인증 서버**: 토큰 교환을 위한 사용자 정의 서버 설정 필요
+
+## Thanks
+
+이 프로젝트는 [Richard Xiong](https://github.com/RichardX366)의 원본 [Obsidian Google Drive Sync](https://github.com/RichardX366/Obsidian-Google-Drive) 플러그인을 기반으로 제작되었습니다. 훌륭한 기초 작업을 제공해 주신 원작자에게 감사드립니다.
