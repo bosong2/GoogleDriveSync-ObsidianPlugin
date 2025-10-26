@@ -1,10 +1,7 @@
 {
 	"id": "google-drive-sync-peng",
 	"name": "Google Drive Sync Enhanced",
-	"version": "1.0.0",
-	"minAppVersion": "1.6.0",
 	"description": "Enhanced Google Drive sync with intelligent file scanning, conflict resolution, and custom server support. Bidirectional sync across multiple devices.",
-	"author": "Peng. (ORG:Richard Xiong)",
-	"authorUrl": "https://ogds.bosong.com",
-	"isDesktopOnly": false
+	"author": "Peng",
+	"repo": "bosong2/GoogleDriveSync-ObsidianPlugin"
 }
