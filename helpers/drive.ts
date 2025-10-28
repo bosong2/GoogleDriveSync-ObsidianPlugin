@@ -655,6 +655,12 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 			return a.localeCompare(b); // 같은 깊이면 알파벳 순
 		});
 
+		// 루트 폴더 ID를 미리 한 번만 가져와서 재사용 (중복 생성 방지)
+		const vaultRootId = await getRootFolderId();
+		if (!vaultRootId) {
+			console.error('Failed to get vault root folder ID');
+			return;
+		}
 
 		for (const folderPath of sortedPaths) {
 			// 이미 ID가 있는 폴더는 건너뛰기
@@ -674,6 +680,9 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 					console.error(`Parent folder not found for ${folderPath}, parent: ${parentPath}`);
 					continue;
 				}
+			} else {
+				// 루트 레벨 폴더인 경우 미리 가져온 루트 ID 사용
+				parentId = vaultRootId;
 			}
 
 			try {
@@ -714,6 +723,13 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 			Object.entries(t.settings.driveIdToPath).map(([id, path]) => [path, id])
 		);
 
+		// 루트 폴더 ID를 미리 한 번만 가져와서 재사용 (중복 생성 방지)
+		const vaultRootId = await getRootFolderId();
+		if (!vaultRootId) {
+			console.error('Failed to get vault root folder ID');
+			return { createdCount: 0, errors: ['Failed to get vault root folder ID'] };
+		}
+
 		let createdCount = 0;
 		const errors: string[] = [];
 
@@ -726,7 +742,7 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 
 				const folderName = folderPath.split('/').pop() || '';
 				const parentPath = folderPath.split('/').slice(0, -1).join('/');
-				const parentId = parentPath ? pathsToIds[parentPath] : await getRootFolderId();
+				const parentId = parentPath ? pathsToIds[parentPath] : vaultRootId;
 
 				if (!parentId) {
 					errors.push(`Parent folder not found for: ${folderPath}`);

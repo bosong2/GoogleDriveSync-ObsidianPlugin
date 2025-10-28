@@ -244,6 +244,13 @@ class ConfirmUndoModal extends Modal {
 export const push = async (t: ObsidianGoogleDrive) => {
 	if (t.syncing) return;
 	
+	// vault root ID를 한 번만 가져와서 전체 push 작업에서 재사용 (중복 생성 방지)
+	const vaultRootId = await t.drive.getRootFolderId();
+	if (!vaultRootId) {
+		new Notice("Cannot get vault root folder ID. Please check your Google Drive connection.");
+		return;
+	}
+	
 	// 초기 동기화 자동 감지 및 실행
 	const isFirstTime = await t.drive.isFirstTimeSync();
 	if (isFirstTime) {
@@ -448,11 +455,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 		const notes = files.filter((file): file is TFile => file instanceof TFile);
 
-		// vault root ID를 한 번만 가져와서 재사용
-		const vaultRootId = await t.drive.getRootFolderId();
-		if (!vaultRootId) {
-			throw new Error("Cannot get vault root folder ID");
-		}
+		// 이미 가져온 vault root ID 재사용
 
 		await batchAsyncs(
 			notes.map((note) => async () => {
@@ -617,11 +620,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 		}
 	}
 
-	// config 파일용 vault root ID도 한 번만 가져와서 재사용
-	const configVaultRootId = await t.drive.getRootFolderId();
-	if (!configVaultRootId) {
-		throw new Error("Cannot get vault root folder ID for config files");
-	}
+	// 이미 가져온 vault root ID 재사용
 
 	await batchAsyncs(
 		configFilesToSync.map((path) => async () => {
@@ -653,11 +652,11 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				parentId = pathsToIds[parentPath];
 				if (!parentId) {
 					console.warn(`Parent folder ID not found for config file ${path}, parent: ${parentPath}. Using vault root instead.`);
-					parentId = configVaultRootId;
+					parentId = vaultRootId;
 				}
 			} else {
 				// 루트 레벨 config 파일인 경우 (parentPath가 빈 문자열이거나 "/")
-				parentId = configVaultRootId;
+				parentId = vaultRootId;
 			}
 			
 			if (!parentId) {
