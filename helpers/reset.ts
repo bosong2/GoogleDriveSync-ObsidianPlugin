@@ -74,8 +74,8 @@ export const reset = async (t: ObsidianGoogleDrive) => {
 			creates
 				.map(([path]) => vault.getAbstractFileByPath(path))
 				.filter(
-					(file) => file instanceof TAbstractFile
-				) as TAbstractFile[]
+					(file): file is TAbstractFile => file instanceof TAbstractFile
+				)
 		);
 	}
 
@@ -83,9 +83,9 @@ export const reset = async (t: ObsidianGoogleDrive) => {
 
 	if (modifies.length) {
 		let completed = 0;
-		const files = modifies.map(([path]) =>
-			vault.getFileByPath(path)
-		) as TFile[];
+		const files = modifies
+			.map(([path]) => vault.getFileByPath(path))
+			.filter((file): file is TFile => file instanceof TFile);
 		await batchAsyncs(
 			files.map((file) => async () => {
 				const [onlineFile, metadata] = await Promise.all([

@@ -56,3 +56,7 @@
 	color: var(--text-error);
 	font-weight: bolder;
 }
+
+.gds-link-pointer {
+	cursor: pointer;
+}

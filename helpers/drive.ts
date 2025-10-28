@@ -159,7 +159,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 	};
 
 	const getRootFolderId = async () => {
-		console.log('Getting vault root folder ID...');
 		const files = await searchFiles(
 			{
 				matches: [{ properties: { obsidian: "vault" } }],
@@ -171,7 +170,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 			return;
 		}
 		if (!files.length) {
-			console.log('Vault root folder not found, creating new one...');
 			try {
 				const rootFolder = await drive
 					.post(`drive/v3/files`, {
@@ -197,7 +195,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 				return;
 			}
 		} else {
-			console.log(`Found existing vault root folder: ${files[0].id}`);
 			return files[0].id as string;
 		}
 	};
@@ -235,7 +232,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		});
 
 		if (existingFolders && existingFolders.length > 0) {
-			console.log(`Folder '${name}' already exists in parent ${parent}, using existing ID: ${existingFolders[0].id}`);
 			return existingFolders[0].id;
 		}
 
@@ -472,8 +468,8 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 
 	const deleteFilesMinimumOperations = async (files: TAbstractFile[]) => {
 		const folders = files.filter(
-			(file) => file instanceof TFolder
-		) as TFolder[];
+			(file): file is TFolder => file instanceof TFolder
+		);
 
 		if (folders.length) {
 			const maxDepth = Math.max(
@@ -566,55 +562,46 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		const allVaultFiles = vault.getAllLoadedFiles();
 		const errorFilePath = `${t.manifest.dir}/error.json`;
 		
+		const configDirPath = vault.configDir;
+		
 		allVaultFiles.forEach(file => {
 			// 파일인 경우
 			if (file instanceof TFile) {
-				if (!file.path.startsWith('.obsidian/') && 
+				if (!file.path.startsWith(configDirPath + '/') && 
 					!file.path.includes('.DS_Store') &&
 					!file.path.includes('.git/') &&
 					file.path !== errorFilePath) {
 					allFiles.push(file.path);
-					console.log(`File added via API: ${file.path}`);
 				} else {
-					console.log(`File excluded via API: ${file.path}`);
 				}
 			}
 			// 폴더인 경우  
 			else if (file instanceof TFolder) {
-				if (!file.path.startsWith('.obsidian/') && 
+				if (!file.path.startsWith(configDirPath + '/') && 
 					!file.path.includes('.git/') &&
 					file.path !== '/' && file.path !== '') {  // 루트 폴더 제외
 					allFolders.push(file.path);
-					console.log(`Folder added via API: ${file.path}`);
 				} else {
-					console.log(`Folder excluded via API: ${file.path} (${file.path === '/' ? 'root folder' : 'config/system folder'})`);
 				}
 			}
 		});
 		
-		console.log(`API scan complete: ${allFiles.length} files, ${allFolders.length} folders`);
 		
 		// 기존 adapter 방식도 병행 (비교용)
-		console.log('Also running adapter-based scan for comparison...');
 		
 		const scanFolder = async (folderPath: string) => {
 			try {
 				const folderContents = await vault.adapter.list(folderPath);
 				
-				console.log(`Scanning folder '${folderPath}':`, {
-					files: folderContents.files,
-					folders: folderContents.folders
-				});
 				
 				// 파일들 추가 (config 파일 및 error.json 제외)
 				folderContents.files.forEach(filePath => {
 					const errorFilePath = `${t.manifest.dir}/error.json`;
-					const shouldInclude = !filePath.startsWith('.obsidian/') && 
+					const shouldInclude = !filePath.startsWith((t.app.vault.configDir || '.obsidian') + '/') && 
 						!filePath.includes('.DS_Store') &&
 						!filePath.includes('.git/') &&
 						filePath !== errorFilePath;
 					
-					console.log(`File '${filePath}': ${shouldInclude ? 'INCLUDED' : 'EXCLUDED'}`);
 					
 					if (shouldInclude) {
 						allFiles.push(filePath);
@@ -623,7 +610,7 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 				
 				// 폴더들 추가 및 재귀 스캔
 				for (const subFolder of folderContents.folders) {
-					if (!subFolder.startsWith('.obsidian/') && 
+					if (!subFolder.startsWith((t.app.vault.configDir || '.obsidian') + '/') && 
 						!subFolder.includes('.git/')) {
 						allFolders.push(subFolder);
 						await scanFolder(subFolder);
@@ -636,12 +623,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 		
 		await scanFolder('');
 		
-		console.log('Final scan results:', {
-			totalFiles: allFiles.length,
-			totalFolders: allFolders.length,
-			sampleFiles: allFiles.slice(0, 5),
-			sampleFolders: allFolders.slice(0, 5)
-		});
 		
 		return { files: allFiles, folders: allFolders };
 	};
@@ -674,7 +655,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 			return a.localeCompare(b); // 같은 깊이면 알파벳 순
 		});
 
-		console.log('Syncing folders in hierarchy order:', sortedPaths);
 
 		for (const folderPath of sortedPaths) {
 			// 이미 ID가 있는 폴더는 건너뛰기
@@ -706,7 +686,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 
 				if (folderId) {
 					pathsToIds[folderPath] = folderId;
-					console.log(`Created/found folder: ${folderPath} -> ${folderId}`);
 				} else {
 					console.error(`No folder ID returned for ${folderPath}`);
 				}
@@ -800,26 +779,21 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 
 	const performInitialSync = async (options = { showProgress: true }) => {
 		try {
-			console.log('Starting intelligent scan all files...');
 			
 			// 1. 로컬 파일 스캔
 			const { files, folders } = await getAllVaultFiles();
-			console.log(`Local scan: ${files.length} files, ${folders.length} folders`);
 			
 			if (files.length === 0 && folders.length === 0) {
 				return { success: true, message: 'No files to sync', filesAdded: 0, foldersCreated: 0 };
 			}
 
 			// 2. Google Drive 현재 상태 확인
-			console.log('Checking Google Drive current state...');
 			const driveFiles = await getAllDriveFiles();
-			console.log(`Drive scan: ${driveFiles.length} files found`);
 			
 			// 3. data.json 상태 확인
 			const pathsToIds = Object.fromEntries(
 				Object.entries(t.settings.driveIdToPath).map(([id, path]) => [path, id])
 			);
-			console.log(`Data.json: ${Object.keys(pathsToIds).length} entries`);
 
 			// 4. 폴더 처리 (우선 처리)
 			let foldersCreated = 0;
@@ -833,19 +807,15 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 				if (!existsInData && !existsOnDrive) {
 					// 새 폴더 → CREATE 필요
 					foldersToCreate.push(folderPath);
-					console.log(`New folder to create: ${folderPath}`);
 				} else if (!existsInData && existsOnDrive) {
 					// data.json 누락 → data.json 업데이트만
 					pathsToIds[folderPath] = existsOnDrive.id;
 					t.settings.driveIdToPath[existsOnDrive.id] = folderPath;
-					console.log(`Restored to data.json: ${folderPath} -> ${existsOnDrive.id}`);
 				} else if (existsInData && !existsOnDrive) {
 					// Drive에서 삭제됨 → CREATE 필요
 					foldersToCreate.push(folderPath);
-					console.log(`Drive deleted, recreate: ${folderPath}`);
 				} else {
 					// 정상 상태
-					console.log(`Folder already synced: ${folderPath}`);
 				}
 			});
 			
@@ -862,7 +832,6 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 			files.forEach(filePath => {
 				// operations queue에 이미 있으면 스킵
 				if (t.settings.operations[filePath]) {
-					console.log(`Already in operations: ${filePath} (${t.settings.operations[filePath]})`);
 					return;
 				}
 				
@@ -873,20 +842,16 @@ export const getDriveClient = (t: ObsidianGoogleDrive) => {
 					// 새 파일 → CREATE
 					t.settings.operations[filePath] = "create";
 					filesAdded++;
-					console.log(`New file to create: ${filePath}`);
 				} else if (!existsInData && existsOnDrive) {
 					// data.json 누락 → data.json 업데이트만
 					pathsToIds[filePath] = existsOnDrive.id;
 					t.settings.driveIdToPath[existsOnDrive.id] = filePath;
-					console.log(`Restored to data.json: ${filePath} -> ${existsOnDrive.id}`);
 				} else if (existsInData && !existsOnDrive) {
 					// Drive에서 삭제됨 → CREATE
 					t.settings.operations[filePath] = "create";
 					filesAdded++;
-					console.log(`Drive deleted, recreate: ${filePath}`);
 				} else {
 					// 정상 상태 (둘 다 존재)
-					console.log(`File already synced: ${filePath}`);
 				}
 			});
 

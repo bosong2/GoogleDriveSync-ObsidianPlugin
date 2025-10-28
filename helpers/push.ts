@@ -352,14 +352,14 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 	// 1단계: 삭제 작업 처리
 	if (deletes.length) {
-		console.log('Processing deletes in sorted order:', deletes.map(([path]) => path));
+		// Processing deletes in sorted order
 		const deleteIds = deletes.map(([path]) => {
 			const id = pathsToIds[path];
-			console.log(`Delete mapping: ${path} -> ${id}`);
+			// Delete mapping logged
 			return id;
 		}).filter(id => id); // undefined 제거
 		
-		console.log('Delete IDs to send:', deleteIds);
+		// Delete IDs prepared
 		
 		if (deleteIds.length === 0) {
 			console.warn('No valid IDs found for deletion');
@@ -372,7 +372,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 					new Notice("An error occurred deleting Google Drive files.");
 					return;
 				}
-				console.log('Delete request completed successfully');
+				// Delete request completed
 			} catch (error) {
 				console.error('Delete request error:', error);
 				new Notice("An error occurred deleting Google Drive files: " + error.message);
@@ -391,7 +391,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				
 				pathsToRemove.forEach(id => {
 					const filePath = t.settings.driveIdToPath[id];
-					console.log(`Cleaning up deleted folder child: ${filePath}`);
+					// Cleaning up deleted folder children
 					delete t.settings.driveIdToPath[id];
 					// operations에서도 정리
 					if (t.settings.operations[filePath]) {
@@ -405,19 +405,19 @@ export const push = async (t: ObsidianGoogleDrive) => {
 	syncNotice.setMessage("Syncing 0% (0/" + totalOperations + ")");
 
 	if (creates.length) {
-		console.log('Processing creates in sorted order:', creates.map(([path]) => path));
+		// Processing creates in sorted order
 		let completed = 0;
 		const files = creates.map(([path]) =>
 			vault.getAbstractFileByPath(path)
 		);
 
 		const folders = files.filter(
-			(file) => file instanceof TFolder
-		) as TFolder[];
+			(file): file is TFolder => file instanceof TFolder
+		);
 
 		// 폴더 우선 처리: 계층구조 순서대로 안전하게 생성
 		if (folders.length) {
-			console.log('Processing folders in hierarchy order...');
+			// Processing folders in hierarchy order
 			const folderPaths = folders.map(f => f.path);
 			
 			try {
@@ -446,7 +446,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 			syncNotice.setMessage(`Syncing ${percentage}% (${foldersCompleted}/${totalOperations}) - Folders created`);
 		}
 
-		const notes = files.filter((file) => file instanceof TFile) as TFile[];
+		const notes = files.filter((file): file is TFile => file instanceof TFile);
 
 		// vault root ID를 한 번만 가져와서 재사용
 		const vaultRootId = await t.drive.getRootFolderId();
@@ -478,24 +478,13 @@ export const push = async (t: ObsidianGoogleDrive) => {
 					}
 					
 					// 디버깅: 파일 업로드 상세 정보 로그
-					console.log(`Uploading file: ${note.path}`, {
-						hasParent: !!note.parent,
-						parentPath: note.parent?.path,
-						parentId: parentId,
-						relevantMappings: Object.entries(pathsToIds).filter(([path]) => 
-							path.includes('Books') || path.includes('test')
-						)
-					});
 					
 					// 부모 폴더 ID 검증
 					if (note.parent && note.parent.path !== "/" && parentId) {
-						console.log(`Verifying parent folder ID: ${parentId} for path: ${note.parent.path}`);
 						try {
 							const parentExists = await t.drive.getFileMetadata(parentId);
-							console.log(`Parent folder verification result:`, parentExists);
 						} catch (error) {
 							console.error(`Parent folder verification failed:`, error);
-							console.log(`Available pathsToIds mappings:`, Object.entries(pathsToIds));
 						}
 					}
 					
@@ -542,7 +531,7 @@ export const push = async (t: ObsidianGoogleDrive) => {
 
 		const files = modifies
 			.map(([path]) => vault.getFileByPath(path))
-			.filter((file) => file instanceof TFile) as TFile[];
+			.filter((file): file is TFile => file instanceof TFile);
 
 		const pathToId = Object.fromEntries(
 			Object.entries(t.settings.driveIdToPath).map(([id, path]) => [
@@ -576,7 +565,6 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				} catch (error: any) {
 					// 404 오류 시 파일이 삭제된 것으로 간주하고 create로 변경
 					if (error?.response?.status === 404) {
-						console.log(`File ${file.path} not found on Drive for modify, changing to create operation...`);
 						// modify → create로 변경
 						t.settings.operations[file.path] = "create";
 						// 기존 ID 매핑 제거
@@ -617,7 +605,6 @@ export const push = async (t: ObsidianGoogleDrive) => {
 	});
 
 	if (foldersToCreate.size) {
-		console.log('Creating config folders in hierarchy order...');
 		// Config 폴더도 계층구조 순서로 안전하게 생성
 		await t.drive.syncFoldersHierarchy(Array.from(foldersToCreate), pathsToIds);
 		
@@ -649,7 +636,6 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				} catch (error: any) {
 					// 404 오류 시 파일이 삭제된 것으로 간주하고 새로 생성
 					if (error?.response?.status === 404) {
-						console.log(`Config file ${path} not found on Drive, creating new file...`);
 						delete t.settings.driveIdToPath[pathsToIds[path]];
 						delete pathsToIds[path];
 						// ID를 제거했으므로 아래 로직에서 새로 생성됨
@@ -678,11 +664,6 @@ export const push = async (t: ObsidianGoogleDrive) => {
 				throw new Error(`Cannot determine parent folder ID for config file: ${path}`);
 			}
 			
-			console.log(`Uploading config file: ${path}`, {
-				parentPath,
-				parentId,
-				pathsToIdsHasParent: !!pathsToIds[parentPath]
-			});
 			
 			const id = await t.drive.uploadFile(
 				new Blob([await adapter.readBinary(path)]),
@@ -721,7 +702,6 @@ export const push = async (t: ObsidianGoogleDrive) => {
 	} catch (error: any) {
 		// 404 오류 또는 ID가 없는 경우 새로 생성
 		if (error?.response?.status === 404 || !dataJsonId) {
-			console.log("data.json not found on Drive, creating new file...");
 			const newId = await t.drive.uploadFile(
 				new Blob([JSON.stringify(t.settings, null, 2)]),
 				"data.json",

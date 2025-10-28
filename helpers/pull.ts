@@ -183,7 +183,7 @@ export const pull = async (
 
 	const deleteFiles = async () => {
 		const deletedFiles = deletions
-			.filter((file) => file instanceof TFile)
+			.filter((file): file is TFile => file instanceof TFile)
 			.filter((file: TFile) => {
 				if (t.settings.operations[file.path] === "modify") {
 					if (!pathToId[file.path]) {
@@ -192,12 +192,12 @@ export const pull = async (
 					return;
 				}
 				return true;
-			}) as TFile[];
+			});
 
 		const deletionPaths = deletions.map((file) => file?.path);
 
 		const deletedFolders = deletions
-			.filter((folder) => folder instanceof TFolder)
+			.filter((folder): folder is TFolder => folder instanceof TFolder)
 			.filter((folder: TFolder) => {
 				if (pathToId[folder.path]) return;
 				if (
@@ -208,7 +208,7 @@ export const pull = async (
 					return true;
 				}
 				t.settings.operations[folder.path] = "create";
-			}) as TFolder[];
+			});
 
 		await t.drive.deleteFilesMinimumOperations([
 			...deletedFolders,
@@ -263,11 +263,11 @@ export const pull = async (
 				completed++;
 
 				// 충돌 감지 및 처리
-				if (localFile && operation === "modify") {
+				if (localFile instanceof TFile && operation === "modify") {
 					// 로컬에서 수정 중이고 원격에서도 변경된 경우 = 충돌 상황
-					const conflict = await detectConflict(t, localFile as TFile, file);
+					const conflict = await detectConflict(t, localFile, file);
 					if (conflict.hasConflict) {
-						await handleConflict(t, localFile as TFile, file, conflict);
+						await handleConflict(t, localFile, file, conflict);
 						conflictCount++;
 						return;
 					}

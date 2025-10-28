@@ -330,7 +330,7 @@ class SettingsTab extends PluginSettingTab {
 
 
 		const linkEl = containerEl.createEl("a", { text: "Get refresh token" });
-		linkEl.style.cursor = "pointer";
+		linkEl.addClass("gds-link-pointer");
 		linkEl.onclick = () => {
 			if (this.plugin.settings.ServerURL) {
 				window.open(this.plugin.settings.ServerURL, '_blank');
