@@ -19,5 +19,8 @@ node_modules
 # obsidian
 data.json
 
+# Development and analysis files
+.tasks/
+
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
