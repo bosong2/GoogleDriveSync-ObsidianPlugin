@@ -8,11 +8,10 @@
 # npm
 node_modules
 
-# Don't include the compiled main.js file in the repo.
-# They should be uploaded to GitHub releases instead.
-main.js
-styles.css
-manifest.json
+# Include compiled files for Obsidian community plugin distribution
+# main.js - included for plugin distribution
+# styles.css - included for plugin distribution  
+# manifest.json - included for plugin distribution
 
 # Exclude sourcemaps
 *.map
